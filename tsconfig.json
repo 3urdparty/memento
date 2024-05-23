@@ -16,13 +16,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "allowJs": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationMap": true
-  },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"],
-    "typeAcquisition": { "enable": true }
+    "noFallthroughCasesInSwitch": false
+  }
 }

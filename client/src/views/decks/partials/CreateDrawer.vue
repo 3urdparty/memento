@@ -180,6 +180,34 @@ const users: App.Models.User[] = [
     password: 'MeinLeben2003+',
   },
 ];
+type Field = {
+  type:
+    | 'text'
+    | 'longtext'
+    | 'number'
+    | 'multiselect'
+    | 'date'
+    | 'time'
+    | 'datetime'
+    | 'color'
+    | 'range'
+    | 'file'
+    | 'checkbox'
+    | 'select'
+    | 'users';
+  icon?: any;
+  value?: any;
+  required?: boolean;
+  removable?: boolean;
+  placeholder?: string;
+  movable?: boolean;
+  editable?: boolean;
+  default?: string;
+  options?: { name: string; value: string; icon?: any }[];
+};
+type Form = {
+  [key: string]: Field;
+};
 const newForm = reactive<Form>({
   name: {
     type: 'text',
