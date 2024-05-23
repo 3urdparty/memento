@@ -14,10 +14,10 @@ import { UsersModule } from './users/users.module';
     FlashcardsModule,
     UsersModule,
     DecksModule,
-    // ServeStaticModule.forRoot({ // New
-    //   renderPath: '/',
-    //   rootPath: '/app/client/dist', // New
-    // }), // New
+  ServeStaticModule.forRoot({ // New
+    renderPath: '/',
+    rootPath: '/app/client/dist', // New
+  }), // New
   ],
   controllers: [AppController],
   providers: [AppService],
