@@ -2,6 +2,7 @@
 import { DeckModule } from './deck/deck.module';
 import { UserModule } from './user/user.module';
 import { DecksModule } from './decks/decks.module';
+import { UsersModule } from './users/users.module';
 // src/app.module.ts
 var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
