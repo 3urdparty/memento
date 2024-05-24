@@ -18,15 +18,19 @@ export class User {
   @Prop({ default: false })
   verified: boolean;
 
+  @Factory(faker => faker.internet.password())
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Factory(faker => faker.image.url())
   @Prop({ required: false })
   imageUrl?: string;
 
+  @Factory(faker => faker.date.soon())
   @Prop({ required: false })
   email_verified_at?: string;
 
+  @Factory(faker => faker.internet.password())
   @Prop({ required: true })
   password: string;
 }

@@ -1,5 +1,21 @@
-import { Property } from "client/src/views/decks/Index.vue";
 import { User } from "src/users/schemas/user.schema";
+
+
+export interface Property {
+  name: string;
+  value: string;
+  type:
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'time'
+  | 'datetime'
+  | 'color'
+  | 'range'
+  | 'file'
+  | 'checkbox'
+  | 'select';
+}
 
 export interface Deck {
   name: string;

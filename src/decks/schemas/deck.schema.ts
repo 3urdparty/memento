@@ -1,10 +1,12 @@
 // src/schemas/menu.schema.ts
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Property } from 'client/src/views/decks/Index.vue';
+
 import { Document } from 'mongoose';
 import { Flashcard, Tag } from 'src/flashcards/schemas/flashcard.schema';
 import { User } from 'src/users/schemas/user.schema';
+import { Property } from '../entities/deck.entity';
+import { Factory } from 'nestjs-seeder';
 
 export type DeckDocument = Deck & Document;
 
@@ -12,54 +14,69 @@ export type DeckDocument = Deck & Document;
   timestamps: { createdAt: 'created', updatedAt: 'updated' },
 })
 export class Deck {
-  @Prop({ required: true })
-  question: string;
 
+  @Factory(faker => faker.lorem.slug(12))
   @Prop({ required: true })
   slug: string;
 
-  @Prop({ required: true })
+  @Factory((faker) => ['easy', 'medium', 'hard', 'very hard', 'expert'][1])
+  @Prop({ required: true, enum: ['easy', 'medium', 'hard', 'very hard', 'expert'] })
   difficulty: string;
 
+  @Factory(faker => faker.image.url())
   @Prop({ required: true })
   coverUrl: string;
 
+  @Factory(faker => faker.number.int())
   @Prop({ required: true })
   total: number;
 
+  @Factory(faker => faker.number.int())
   @Prop({ required: true })
   new: number;
 
+  @Factory(faker => faker.number.int())
   @Prop({ required: true })
   due: number;
 
+
+  @Factory(faker => faker.number.int())
   @Prop({ required: true })
   leech: number;
 
+  @Factory(faker => faker.number.int())
   @Prop({ required: true })
   suspended: number;
 
-  @Prop({ required: true })
+  @Factory(faker => faker.number.int({ min: 0, max: 5 }))
+  @Prop({ required: true, min: 0, max: 5 })
   rating: number;
 
+  @Factory(faker => faker.number.int())
   @Prop({ required: true })
   recentStudents: number;
 
+  @Factory(() => [])
   @Prop({ required: true })
   properties: Property[];
 
+  @Factory(() => [])
   @Prop({ required: true })
   contributors: User[];
 
+  @Factory(faker => faker.lorem.words(4))
   @Prop({ required: true })
   name: string;
 
+  @Factory(faker => faker.lorem.paragraph())
   @Prop({ required: true })
   description: string;
 
+  @Factory(() => [])
   @Prop({ required: true })
   tags: Tag[];
 
+  @Factory(() => [])
   @Prop({ required: true })
   flashcards: Flashcard[];
 }
