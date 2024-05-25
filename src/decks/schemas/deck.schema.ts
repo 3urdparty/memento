@@ -2,7 +2,7 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { Flashcard, Tag } from 'src/flashcards/schemas/flashcard.schema';
 import { User } from 'src/users/schemas/user.schema';
 import { Property } from '../entities/deck.entity';
@@ -19,7 +19,7 @@ export class Deck {
   @Prop({ required: true })
   slug: string;
 
-  @Factory((faker) => ['easy', 'medium', 'hard', 'very hard', 'expert'][1])
+  @Factory((faker) => faker.helpers.arrayElement(['easy', 'medium', 'hard', 'very hard', 'expert']))
   @Prop({ required: true, enum: ['easy', 'medium', 'hard', 'very hard', 'expert'] })
   difficulty: string;
 
@@ -61,7 +61,7 @@ export class Deck {
   properties: Property[];
 
   @Factory(() => [])
-  @Prop({ required: true })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   contributors: User[];
 
   @Factory(faker => faker.lorem.words(4))
