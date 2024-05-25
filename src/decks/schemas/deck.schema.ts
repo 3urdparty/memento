@@ -12,6 +12,12 @@ export type DeckDocument = Deck & Document;
 
 @Schema({
   timestamps: { createdAt: 'created', updatedAt: 'updated' },
+  toJSON: {
+    getters: true,
+    virtuals: true,
+  },
+  virtuals: true,
+
 })
 export class Deck {
 
@@ -27,33 +33,26 @@ export class Deck {
   @Prop({ required: true })
   coverUrl: string;
 
-  @Factory(faker => faker.number.int())
-  @Prop({ required: true })
+  @Prop({ virtual: true, get: function() { return this.cards.length }, required: false })
   total: number;
 
-  @Factory(faker => faker.number.int())
-  @Prop({ required: true })
+  @Prop({ virtual: true, get: function() { return this.cards.length }, required: false })
   new: number;
 
-  @Factory(faker => faker.number.int())
-  @Prop({ required: true })
+  @Prop({ virtual: true, get: function() { return this.cards.length }, omit: 'due' })
   due: number;
 
-
-  @Factory(faker => faker.number.int())
-  @Prop({ required: true })
+  @Prop({ virtual: 'leech', get: function() { return this.cards.length }, })
   leech: number;
 
-  @Factory(faker => faker.number.int())
-  @Prop({ required: true })
+  @Prop({ virtual: true, get: function() { return this.cards.length } })
   suspended: number;
 
   @Factory(faker => faker.number.int({ min: 0, max: 5 }))
   @Prop({ required: true, min: 0, max: 5 })
   rating: number;
 
-  @Factory(faker => faker.number.int())
-  @Prop({ required: true })
+  @Prop({ virtual: true, get: function() { return [] }, omit: 'recentStudents' })
   recentStudents: number;
 
   @Factory(() => [])
@@ -82,4 +81,4 @@ export class Deck {
 }
 
 
-export const DeckSchema = SchemaFactory.createForClass(Deck)
+export const DeckSchema = SchemaFactory.createForClass(Deck).omit(['total', 'due'])

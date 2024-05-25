@@ -141,6 +141,16 @@
             </MultiSelect>
           </li>
         </ul>
+
+        <div class="flex justify-end mt-4">
+          <button
+            @click="createDeck"
+            type="button"
+            class="rounded-md bg-green-400 px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+          >
+            Create
+          </button>
+        </div>
       </form>
     </div>
   </Sidebar>
@@ -169,6 +179,8 @@ import UserSelect from '@/components/UserSelect.vue';
 import Textarea from 'primevue/textarea';
 import MultiSelect from 'primevue/multiselect';
 import Sidebar from 'primevue/sidebar';
+import { useAxios } from '@vueuse/integrations/useAxios.mjs';
+import { instance } from '@/axios/instance';
 
 const users: App.Models.User[] = [
   {
@@ -268,4 +280,33 @@ interface Emits {
 }
 const emits = defineEmits<Emits>();
 const open = useVModel(props, 'open', emits);
+
+const { execute } = useAxios<Deck>(
+  '/decks',
+  {
+    method: 'POST',
+  },
+  instance,
+);
+
+const createDeck = () => {
+  execute({
+    data: {
+      name: 'Name',
+      difficulty: 'easy',
+      cover: 'http://localhost',
+      contributors: [],
+      description: 'Description',
+      tags: [],
+    },
+  })
+    .then(() => {
+      console.log('Sent');
+      open.value = false;
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+    .finally(() => {});
+};
 </script>

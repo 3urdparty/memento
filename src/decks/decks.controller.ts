@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { Deck } from './schemas/deck.schema';
 
@@ -17,7 +17,18 @@ export class DecksController {
   }
 
   @Post()
-  async create(@Body() deck: Deck): Promise<Deck> {
+  async create(@Req() req: RawBodyRequest<Request>): Promise<Deck> {
+    const deck = {
+      name: 'New Deck',
+      description: 'New Deck',
+      tags: [],
+      slug: '',
+      url: '',
+      difficulty: 'easy',
+      cards: [],
+      rating: 4,
+      coverUrl: 'https://via.placeholder.com/150'
+    }
     return await this.decksService.create(deck);
   }
 

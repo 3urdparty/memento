@@ -22,34 +22,26 @@
         <!-- Drawer Header  -->
         <div class="border-b border-slate-200/50 pb-5">
           <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2 w-full">
+            <div class="flex items-center gap-2 w-1/3">
               <!-- Title -->
-              <input
-                class="font-semibold leading-6 text-lg pl-0 text-slate-200/80 capitalize bg-transparent focus:outline-none focus:ring-0 border-none w-full"
-                v-model="drawer.name"
-              />
+              <EditInput v-model="drawer.name" />
               <!-- Tags -->
               <Badge v-for="tag in drawer.tags"> {{ tag.name }}</Badge>
             </div>
 
             <div class="mt-4 flex flex-shrink-0 md:ml-4 md:mt-0">
               <button
-                type="button"
-                class="inline-flex items-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
-              >
-                Edit
-              </button>
-              <button
                 @click="open = true"
                 type="button"
                 class="ml-3 inline-flex items-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
               >
-                Create
+                <Plus class="w-5 h-5 text-slate-200" />
               </button>
             </div>
           </div>
 
           <!-- Description -->
+          <!-- <Textarea v-model="drawer.description" class="w-full mt-2" v-model="drawer.description"/> -->
           <p class="mt-2 max-w-4xl text-sm text-slate-500">
             {{ drawer.description }}
           </p>
@@ -82,20 +74,14 @@ import SearchBar from '@/components/SearchBar.vue';
 import CreateDrawer from './partials/CreateDrawer.vue';
 import { useAxios } from '@vueuse/integrations/useAxios';
 import axios from 'axios';
-import { DatabaseIcon, Spade } from 'lucide-vue-next';
+import { DatabaseIcon, Plus, Spade } from 'lucide-vue-next';
+import EditInput from '@/components/EditInput.vue';
+import Textarea from 'primevue/textarea';
+import { instance } from '@/axios/instance';
 const query = reactive({
   search: '',
 });
 
-const instance = axios.create({
-  baseURL: 'http://localhost:3000/api',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    common: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  },
-});
 const { data: drawers, execute: fetchDrawers } = useAxios<Drawer[]>(
   '/drawers',
   instance,

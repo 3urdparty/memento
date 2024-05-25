@@ -45,9 +45,7 @@ export class Drawer {
     get: function() {
       return `${process.env.BASE_URL}/drawers/${this.slug}`
     }
-
   })
-
   url: string;
 }
 
