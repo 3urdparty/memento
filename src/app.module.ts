@@ -8,11 +8,13 @@ import { FlashcardsModule } from './flashcards/flashcards.module';
 import { ServeStaticModule } from '@nestjs/serve-static'; // New
 import { DecksModule } from './decks/decks.module';
 import { UsersModule } from './users/users.module';
+import { DrawersModule } from './drawers/drawers.module';
 
 @Module({
   imports: [MongooseModule.forRoot(process.env.MONGODB_URL),
     FlashcardsModule,
     UsersModule,
+    DrawersModule,
     DecksModule,
   ServeStaticModule.forRoot({ // New
     renderPath: '/',

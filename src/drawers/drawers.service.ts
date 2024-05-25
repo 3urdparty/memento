@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDrawerDto } from './dto/create-drawer.dto';
-import { UpdateDrawerDto } from './dto/update-drawer.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Drawer } from './schema/drawer.schema';
 
 @Injectable()
 export class DrawersService {
-  create(createDrawerDto: CreateDrawerDto) {
-    return 'This action adds a new drawer';
+  constructor(@InjectModel(Drawer.name) private readonly drawerModel: Model<Drawer>) { }
+
+  async findAll(): Promise<Drawer[]> {
+    return await this.drawerModel.find().exec()
+
   }
 
-  findAll() {
-    return `This action returns all drawers`;
+  async findOne(id: string): Promise<Drawer> {
+    return await this.drawerModel.findById(id).exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} drawer`;
+  async create(drawer: Drawer): Promise<Drawer> {
+    const newDrawer = new this.drawerModel(drawer);
+    return await newDrawer.save();
   }
 
-  update(id: number, updateDrawerDto: UpdateDrawerDto) {
-    return `This action updates a #${id} drawer`;
+  async update(id: string, drawer: Drawer): Promise<Drawer> {
+    return await this.drawerModel.findByIdAndUpdate(id, drawer, { new: true });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} drawer`;
+  async delete(id: string): Promise<Drawer> {
+    return await this.drawerModel.findByIdAndDelete(id);
   }
 }

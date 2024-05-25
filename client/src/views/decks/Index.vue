@@ -20,13 +20,14 @@
       <!-- Drawer Section -->
       <li v-for="drawer in drawers">
         <!-- Drawer Header  -->
-        <div class="border-b border-gray-200/50 pb-5">
+        <div class="border-b border-slate-200/50 pb-5">
           <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 w-full">
               <!-- Title -->
-              <h3 class="font-semibold leading-6 text-lg text-slate-200/80">
-                Computational Methods
-              </h3>
+              <input
+                class="font-semibold leading-6 text-lg pl-0 text-slate-200/80 capitalize bg-transparent focus:outline-none focus:ring-0 border-none w-full"
+                v-model="drawer.name"
+              />
               <!-- Tags -->
               <Badge v-for="tag in drawer.tags"> {{ tag.name }}</Badge>
             </div>
@@ -49,44 +50,56 @@
           </div>
 
           <!-- Description -->
-          <p class="mt-2 max-w-4xl text-sm text-gray-500">
-            Computational methods are the backbone of modern science. This
-            drawer contains all the decks related to computational methods.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          <p class="mt-2 max-w-4xl text-sm text-slate-500">
+            {{ drawer.description }}
           </p>
         </div>
         <ul class="grid grid-cols-4 mt-4 gap-4">
           <li v-for="deck in drawer.decks">
-            <Deck :deck="deck" />
+            <!-- <Deck :deck="deck" /> -->
           </li>
         </ul>
       </li>
     </ul>
+    <div>
+      <button
+        @click="createDrawer"
+        type="button"
+        class="rounded-md bg-green-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+      >
+        Add Drawer
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import { DataService } from '@/services/DataService';
-
-const drawers = ref<App.Models.Drawer[]>([]);
+import { ref, reactive } from 'vue';
+import { Drawer } from '../../../../src/drawers/schema/drawer.schema';
 import Badge from '@/components/Badge.vue';
-
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import SearchBar from '@/components/SearchBar.vue';
-import Deck from './partials/Deck.vue';
 import CreateDrawer from './partials/CreateDrawer.vue';
+import { useAxios } from '@vueuse/integrations/useAxios';
+import axios from 'axios';
+import { DatabaseIcon, Spade } from 'lucide-vue-next';
 const query = reactive({
   search: '',
 });
 
-onMounted(() => {
-  DataService.getDrawers().then(
-    //@ts-ignore
-    (data) => (drawers.value = data.slice(0, 12) as App.Models.Drawer[]),
-  );
+const instance = axios.create({
+  baseURL: 'http://localhost:3000/api',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    common: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  },
 });
+const { data: drawers, execute: fetchDrawers } = useAxios<Drawer[]>(
+  '/drawers',
+  instance,
+);
 const open = ref(false);
 export interface Property {
   name: string;
@@ -103,5 +116,33 @@ export interface Property {
     | 'checkbox'
     | 'select';
 }
+
+const { execute } = useAxios<Drawer>(
+  '/drawers',
+  {
+    method: 'POST',
+  },
+  instance,
+  {
+    immediate: false,
+  },
+);
+const createDrawer = () => {
+  execute({
+    data: {
+      icon: 'icon',
+      name: 'Algorithms analysis and design',
+      description: 'Subject at UNI',
+    },
+  })
+    .then(() => {
+      console.log('Sent');
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+    .finally(() => {
+      fetchDrawers();
+    });
+};
 </script>
-index.vue

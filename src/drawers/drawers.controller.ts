@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest } from '@nestjs/common';
 import { DrawersService } from './drawers.service';
-import { CreateDrawerDto } from './dto/create-drawer.dto';
-import { UpdateDrawerDto } from './dto/update-drawer.dto';
+import { Drawer } from './schema/drawer.schema';
 
 @Controller('drawers')
 export class DrawersController {
-  constructor(private readonly drawersService: DrawersService) {}
-
-  @Post()
-  create(@Body() createDrawerDto: CreateDrawerDto) {
-    return this.drawersService.create(createDrawerDto);
-  }
+  constructor(private readonly drawersService: DrawersService) { }
 
   @Get()
-  findAll() {
-    return this.drawersService.findAll();
+  async findAll(): Promise<Drawer[]> {
+    return await this.drawersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.drawersService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Drawer> {
+    return await this.drawersService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDrawerDto: UpdateDrawerDto) {
-    return this.drawersService.update(+id, updateDrawerDto);
+
+  @Post()
+  async create(@Req() req: RawBodyRequest<Request>): Promise<Drawer> {
+    console.log(req.body)
+    // console.log(drawer);
+
+    const drawer = {
+      name: 'New Drawer',
+      icon: 'Icon',
+      description: 'New Drawer',
+      tags: [],
+      slug: '',
+      url: ''
+
+    }
+    return await this.drawersService.create(drawer);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() drawer: Drawer): Promise<Drawer> {
+    return await this.drawersService.update(id, drawer);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.drawersService.remove(+id);
+  async delete(@Param('id') id: string): Promise<Drawer> {
+    return await this.drawersService.delete(id);
   }
 }

@@ -14,9 +14,9 @@ export class DecksSeeder implements Seeder {
   ) { }
 
   async seed(): Promise<any> {
-    const decks = DataFactory.createForClass(Deck).generate(10, {
+    const decks = DataFactory.createForClass(Deck).generate(0, {
     }).map(deck => {
-      const users = DataFactory.createForClass(User).generate(10).map(user => ({ ...user, _id: new ObjectId() }))
+      const users = DataFactory.createForClass(User).generate(0).map(user => ({ ...user, _id: new ObjectId() }))
       return ({
         ...deck,
         contributors: users.map(user => user._id)
