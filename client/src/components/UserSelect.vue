@@ -9,7 +9,7 @@
     placeholder="Add Contributors"
   >
     <template #chip="{ value }">
-      <div>
+      <div class="flex items-center gap-2">
         <img
           v-if="value.imageUrl"
           :src="value.imageUrl"

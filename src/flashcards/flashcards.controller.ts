@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { FlashcardsService } from './flashcards.service';
 import { CreateFlashcardDto } from './dto/create-flashcard.dto';
 import { UpdateFlashcardDto } from './dto/update-flashcard.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('flashcards')
 @Controller('flashcards')
 export class FlashcardsController {
   constructor(private readonly flashcardsService: FlashcardsService) { }

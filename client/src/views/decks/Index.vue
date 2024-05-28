@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CreateDrawer v-model:open="open" />
+    <CreateDrawer v-model:open="open" @submit="fetchDrawers" />
     <div>
       <BreadCrumbs />
       <div class="mt-2 md:flex md:items-center md:justify-between">
@@ -48,7 +48,7 @@
         </div>
         <ul class="grid grid-cols-4 mt-4 gap-4">
           <li v-for="deck in drawer.decks">
-            <!-- <Deck :deck="deck" /> -->
+            <Deck :deck="deck" />
           </li>
         </ul>
       </li>
@@ -73,11 +73,11 @@ import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import CreateDrawer from './partials/CreateDrawer.vue';
 import { useAxios } from '@vueuse/integrations/useAxios';
-import axios from 'axios';
+import { object, string } from 'yup';
 import { DatabaseIcon, Plus, Spade } from 'lucide-vue-next';
 import EditInput from '@/components/EditInput.vue';
-import Textarea from 'primevue/textarea';
 import { instance } from '@/axios/instance';
+import Deck from './partials/Deck.vue';
 const query = reactive({
   search: '',
 });
@@ -103,7 +103,7 @@ export interface Property {
     | 'select';
 }
 
-const { execute } = useAxios<Drawer>(
+const { execute: requestCreateDrawer } = useAxios<Drawer>(
   '/drawers',
   {
     method: 'POST',
@@ -114,7 +114,7 @@ const { execute } = useAxios<Drawer>(
   },
 );
 const createDrawer = () => {
-  execute({
+  requestCreateDrawer({
     data: {
       icon: 'icon',
       name: 'Algorithms analysis and design',

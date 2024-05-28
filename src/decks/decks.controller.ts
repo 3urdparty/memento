@@ -1,7 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { Deck } from './schemas/deck.schema';
+import mongoose, { ObjectId } from 'mongoose';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { ApiConsumes, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { CreateDeckDto } from './dto/create-deck.dto';
 
+
+@ApiTags('decks')
 @Controller('decks')
 export class DecksController {
   constructor(private readonly decksService: DecksService) { }
@@ -16,21 +23,6 @@ export class DecksController {
     return await this.decksService.findOne(id);
   }
 
-  @Post()
-  async create(@Req() req: RawBodyRequest<Request>): Promise<Deck> {
-    const deck = {
-      name: 'New Deck',
-      description: 'New Deck',
-      tags: [],
-      slug: '',
-      url: '',
-      difficulty: 'easy',
-      cards: [],
-      rating: 4,
-      coverUrl: 'https://via.placeholder.com/150'
-    }
-    return await this.decksService.create(deck);
-  }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() deck: Deck): Promise<Deck> {
@@ -40,5 +32,24 @@ export class DecksController {
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Deck> {
     return await this.decksService.delete(id);
+  }
+
+  @ApiConsumes('multipart/form-data')
+  @Post('')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './storage/images/',
+      filename: (req, file, cb) => {
+        const filename = `${Date.now()}.${file.originalname.split('.').pop()}`;
+        cb(null, filename);
+      },
+    }),
+  }))
+
+  async create(@UploadedFile() file: Express.Multer.File, @Body() deck: CreateDeckDto): Promise<Deck> {
+    console.log(file);
+    console.log(deck);
+    deck.coverUrl = file.filename;
+    return await this.decksService.create(deck);
   }
 }

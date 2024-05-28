@@ -2,53 +2,25 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { Flashcard, Tag } from 'src/flashcards/schemas/flashcard.schema';
 import { User } from 'src/users/schemas/user.schema';
 import { Property } from '../entities/deck.entity';
 import { Factory } from 'nestjs-seeder';
-import { Drawer } from 'src/drawers/schema/drawer.schema';
 
-export type DeckDocument = HydratedDocument<Deck>
+export type DeckDocument = Deck & Document;
 
-
-export class Field {
-  type:
-    | 'text'
-    | 'longtext'
-    | 'number'
-    | 'multiselect'
-    | 'date'
-    | 'time'
-    | 'datetime'
-    | 'color'
-    | 'range'
-    | 'file'
-    | 'checkbox'
-    | 'select'
-    | 'users';
-  icon?: any;
-  value?: any;
-  required?: boolean;
-  removable?: boolean;
-  placeholder?: string;
-  movable?: boolean;
-  editable?: boolean;
-  default?: string;
-  options?: { name: string; value: string; icon?: any }[];
-};
 @Schema({
   timestamps: { createdAt: 'created', updatedAt: 'updated' },
   toJSON: {
     getters: true,
-    virtuals: true,
   },
+
 })
-
-
 export class Deck {
 
-  @Prop({ virtual: true, get: function() { return this._id } })
+  @Factory(faker => faker.lorem.slug(12))
+  @Prop({ required: true })
   slug: string;
 
   @Factory((faker) => faker.helpers.arrayElement(['easy', 'medium', 'hard', 'very hard', 'expert']))
@@ -56,23 +28,23 @@ export class Deck {
   difficulty: string;
 
   @Factory(faker => faker.image.url())
-  @Prop({ required: false, get: (url: string) => `${process.env.IMAGES_URL}/${url}` })
+  @Prop({ required: true })
   coverUrl: string;
 
   @Prop({ virtual: true, get: function() { return this.cards.length } })
-  total: number
+  total?: number;
 
   @Prop({ virtual: true, get: function() { return this.cards.length } })
-  new: number;
+  new?: number;
 
   @Prop({ virtual: true, get: function() { return this.cards.length } })
-  due: number;
+  due?: number;
 
   @Prop({ virtual: 'leech', get: function() { return this.cards.length }, })
-  leech: number;
+  leech?: number;
 
   @Prop({ virtual: true, get: function() { return this.cards.length } })
-  suspended?: number;
+  suspended: number;
 
   @Factory(faker => faker.number.int({ min: 0, max: 5 }))
   @Prop({ required: true, min: 0, max: 5 })
@@ -82,7 +54,7 @@ export class Deck {
   recentStudents?: number;
 
   @Factory(() => [])
-  @Prop({ required: true, default: [] })
+  @Prop({ required: true })
   properties: Property[];
 
   @Factory(() => [])
@@ -90,7 +62,7 @@ export class Deck {
   contributors: User[];
 
   @Factory(faker => faker.lorem.words(4))
-  @Prop({ required: true, type: Field })
+  @Prop({ required: true })
   name: string;
 
   @Factory(faker => faker.lorem.paragraph())
@@ -102,13 +74,9 @@ export class Deck {
   tags: Tag[];
 
   @Factory(() => [])
-  @Prop({ required: false })
-  cards: Flashcard[];
-
-  @Prop({ type: [Types.ObjectId], ref: Drawer.name })
-  drawers?: Drawer[];
+  @Prop({ required: true })
+  flashcards: Flashcard[];
 }
-
 
 
 export const DeckSchema = SchemaFactory.createForClass(Deck)

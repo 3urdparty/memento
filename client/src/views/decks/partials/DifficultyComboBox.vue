@@ -1,6 +1,6 @@
 <template>
   <!-- @vue-ignore -->
-  <ComboBox v-model="selected" :items="items" />
+  <ComboBox v-model="selected" :items="items" displayValue="value" />
 </template>
 <script setup lang="ts">
 import ComboBox, { type Option } from '@/components/ComboBox.vue';

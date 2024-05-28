@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { Factory } from 'nestjs-seeder';
 import { Deck } from 'src/decks/schemas/deck.schema';
 import { Tag } from 'src/flashcards/schemas/flashcard.schema';
+import { DrawersService } from '../drawers.service';
+
 
 export type DrawerDocument = Drawer & Document;
+
 
 @Schema({
   timestamps: { createdAt: 'created', updatedAt: 'updated' },
@@ -12,6 +15,7 @@ export type DrawerDocument = Drawer & Document;
     getters: true,
   },
 })
+
 
 export class Drawer {
   @Factory((faker) => 'icon')
@@ -30,7 +34,7 @@ export class Drawer {
   tags: Tag[];
 
   @Factory(() => [])
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Deck' }], default: [] })
+  @Prop({ type: [Types.ObjectId], ref: 'Deck', default: [] })
   decks?: Deck[];
 
   @Prop({
@@ -46,9 +50,16 @@ export class Drawer {
       return `${process.env.BASE_URL}/drawers/${this.slug}`
     }
   })
+
   url: string;
 }
 
 
 export const DrawerSchema = SchemaFactory.createForClass(Drawer)
+
+DrawerSchema.pre('save', function(next) {
+  //@ts-ignore
+  this.decks = this.decks.map(deck => deck._id)
+  next()
+})
 

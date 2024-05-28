@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest } from '@nestjs/common';
 import { DrawersService } from './drawers.service';
 import { Drawer } from './schema/drawer.schema';
+import mongoose from 'mongoose';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('drawers')
 @Controller('drawers')
 export class DrawersController {
   constructor(private readonly drawersService: DrawersService) { }
@@ -20,8 +23,6 @@ export class DrawersController {
   @Post()
   async create(@Req() req: RawBodyRequest<Request>): Promise<Drawer> {
     console.log(req.body)
-    // console.log(drawer);
-
     const drawer = {
       name: 'New Drawer',
       icon: 'Icon',

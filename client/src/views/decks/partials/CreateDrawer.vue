@@ -13,7 +13,7 @@
       aria-labelledby="drawer-label"
       aria-hidden="true"
     >
-      <form action="#">
+      <div>
         <ul class="space-y-3">
           <li v-for="(property, name) in newForm">
             <label
@@ -75,7 +75,7 @@
               v-if="property.type == 'select'"
               :options="property.options"
               optionLabel="name"
-              placeholder="Select a difficulty"
+              :placeholder="property.placeholder as string"
             >
               <template #value="{ value }">
                 <div v-if="value.value" class="flex items-center">
@@ -99,13 +99,14 @@
             </Dropdown>
 
             <FileUpload
+              :multiple="false"
               v-if="property.type == 'file'"
               mode="basic"
               name="demo[]"
               url="/api/upload"
               accept="image/*"
-              :maxFileSize="1000000"
-              @upload="onUpload"
+              :maxFileSize="5000000"
+              @select="onFileSelect"
             />
 
             <UserSelect
@@ -151,12 +152,12 @@
             Create
           </button>
         </div>
-      </form>
+      </div>
     </div>
   </Sidebar>
 </template>
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import {
   Angry,
   Annoyed,
@@ -174,53 +175,38 @@ import {
 import InputText from 'primevue/inputtext';
 import { useVModel } from '@vueuse/core';
 import Dropdown from 'primevue/dropdown';
-import FileUpload, { FileUploadUploadEvent } from 'primevue/fileupload';
+import FileUpload, { FileUploadSelectEvent } from 'primevue/fileupload';
 import UserSelect from '@/components/UserSelect.vue';
 import Textarea from 'primevue/textarea';
 import MultiSelect from 'primevue/multiselect';
 import Sidebar from 'primevue/sidebar';
 import { useAxios } from '@vueuse/integrations/useAxios.mjs';
 import { instance } from '@/axios/instance';
+import { array, object, string } from 'yup';
+import { UserService } from '@/services/UserService';
+import { Deck, Field } from '@backend/decks/schemas/deck.schema';
+import { User } from '@backend/users/schemas/user.schema';
 
-const users: App.Models.User[] = [
-  {
-    name: 'John Doe',
-    imageUrl:
-      'https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    email: 'john.doe@gmail.com',
-    verified: true,
-    password: 'MeinLeben2003+',
-  },
+interface Props {
+  open: boolean;
+}
+const props = defineProps<Props>();
+interface Emits {
+  (e: 'update:open', value: boolean): void;
+  (e: 'submit'): void;
+}
+const emits = defineEmits<Emits>();
+const open = useVModel(props, 'open', emits);
+
+const difficulties = [
+  { name: 'Easy', value: 'easy', icon: Smile },
+  { name: 'Medium', value: 'medium', icon: Meh },
+  { name: 'Hard', value: 'hard', icon: Annoyed },
+  { name: 'Very Hard', value: 'very hard', icon: Frown },
+  { name: 'Expert', value: 'expert', icon: Angry },
 ];
-type Field = {
-  type:
-    | 'text'
-    | 'longtext'
-    | 'number'
-    | 'multiselect'
-    | 'date'
-    | 'time'
-    | 'datetime'
-    | 'color'
-    | 'range'
-    | 'file'
-    | 'checkbox'
-    | 'select'
-    | 'users';
-  icon?: any;
-  value?: any;
-  required?: boolean;
-  removable?: boolean;
-  placeholder?: string;
-  movable?: boolean;
-  editable?: boolean;
-  default?: string;
-  options?: { name: string; value: string; icon?: any }[];
-};
-type Form = {
-  [key: string]: Field;
-};
-const newForm = reactive<Form>({
+
+const newForm = reactive<{ [key: string]: Field }>({
   name: {
     type: 'text',
     icon: FolderPen,
@@ -232,27 +218,23 @@ const newForm = reactive<Form>({
     editable: false,
     default: 'Chapter 1',
   },
+
+  coverImage: {
+    name: 'Cover Image',
+    value: null as File | null,
+    type: 'file',
+  },
   difficulty: {
     type: 'select',
     icon: FlagIcon,
     value: 'easy',
     required: true,
     removable: false,
-    placeholder: 'Difficulty',
+    placeholder: 'Select your difficulty',
     movable: false,
     editable: false,
     default: 'easy',
-    options: [
-      { name: 'Easy', value: 'easy', icon: Smile },
-      { name: 'Medium', value: 'medium', icon: Meh },
-      { name: 'Hard', value: 'hard', icon: Annoyed },
-      { name: 'Very Hard', value: 'very hard', icon: Frown },
-      { name: 'Expert', value: 'expert', icon: Angry },
-    ],
-  },
-  cover: {
-    type: 'file',
-    value: '',
+    options: difficulties,
   },
   contributors: {
     type: 'users',
@@ -260,53 +242,66 @@ const newForm = reactive<Form>({
   },
   description: {
     type: 'longtext',
-    value: '',
+    value: ' ',
   },
   tags: {
+    value: [],
     type: 'multiselect',
     options: [{ name: 'Computer Science', value: 'computerscience' }],
   },
+  rating: {
+    value: 4,
+    type: 'rating',
+  },
 });
-const onUpload = (e: FileUploadUploadEvent) => {
+
+const onFileSelect = (e: FileUploadSelectEvent) => {
   console.log(e);
+  newForm.coverImage.value = e.files[0];
 };
 
-interface Props {
-  open: boolean;
-}
-const props = defineProps<Props>();
-interface Emits {
-  (e: 'update:open', value: boolean): void;
-}
-const emits = defineEmits<Emits>();
-const open = useVModel(props, 'open', emits);
+const users = ref<User[]>([]);
 
-const { execute } = useAxios<Deck>(
-  '/decks',
-  {
-    method: 'POST',
-  },
-  instance,
-);
+onMounted(() => {
+  UserService.getUsers().then((response) => {
+    users.value = response.data;
+  });
+});
 
 const createDeck = () => {
-  execute({
-    data: {
-      name: 'Name',
-      difficulty: 'easy',
-      cover: 'http://localhost',
-      contributors: [],
-      description: 'Description',
-      tags: [],
-    },
-  })
-    .then(() => {
-      console.log('Sent');
-      open.value = false;
+  let formData = new FormData();
+  formData.append('file', newForm.coverImage.value as File);
+  formData.append('name', newForm.name.value);
+  formData.append('difficulty', newForm.difficulty.value.value);
+  formData.append(
+    'contributors',
+    newForm.contributors.value.map((c) => c._id),
+  );
+  formData.append('description', newForm.description.value);
+  formData.append('tags', newForm.tags.value);
+  formData.append('rating', newForm.rating.value);
+  instance
+    .post('/decks', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(function () {
+      console.log('SUCCESS!!');
     })
     .catch((e) => {
       console.log(e);
     })
-    .finally(() => {});
+    .finally(() => {
+      open.value = false;
+      emits('submit');
+    });
 };
+
+let DeckSchema = object({
+  name: string().required(),
+  description: string().required(),
+  icon: string().required(),
+  tags: array().of(string()).required(),
+});
 </script>

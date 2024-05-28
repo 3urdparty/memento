@@ -173,7 +173,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import Logo from '@/assets/Logo.svg?component';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { WalletCards, Target, Bell, Eclipse } from 'lucide-vue-next';
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import IconButton from '@/components/IconButton.vue';
 import AvatarDropDown from './AvatarDropDown.vue';
 import Button from '@/components/Button.vue';
@@ -181,6 +181,7 @@ import { useReview } from '@/stores/review';
 import CommandPalette from '@/components/CommandPalette.vue';
 import { onKeyStroke } from '@vueuse/core';
 import { useAuth } from '@/composables/auth';
+import { UserService } from '@/services/UserService';
 
 const open = ref(true);
 const currentRoute = useRoute();
@@ -199,5 +200,12 @@ const { user } = useAuth();
 onKeyStroke(['cmd', 'k'], (e) => {
   e.preventDefault();
   palette.open = !palette.open;
+});
+const users = ref([]);
+
+onMounted(() => {
+  UserService.getUsers().then((response) => {
+    users.value = response.data[0];
+  });
 });
 </script>
