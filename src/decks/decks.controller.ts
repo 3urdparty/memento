@@ -35,8 +35,8 @@ export class DecksController {
   }
 
   @ApiConsumes('multipart/form-data')
-  @Post('')
-  @UseInterceptors(FileInterceptor('file', {
+  @Post()
+  @UseInterceptors(FileInterceptor('coverImage', {
     storage: diskStorage({
       destination: './storage/images/',
       filename: (req, file, cb) => {
@@ -47,9 +47,8 @@ export class DecksController {
   }))
 
   async create(@UploadedFile() file: Express.Multer.File, @Body() deck: CreateDeckDto): Promise<Deck> {
-    console.log(file);
-    console.log(deck);
-    deck.coverUrl = file.filename;
+    if (file)
+      deck.coverUrl = file.filename;
     return await this.decksService.create(deck);
   }
 }

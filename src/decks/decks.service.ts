@@ -23,9 +23,9 @@ export class DecksService {
     console.log(newDeck);
     const drawer = (await this.drawerModel.find().exec())[0]
     //@ts-ignore
+
     drawer.decks.push(newDeck._id);
     await drawer.save();
-    // console.log(drawer);
     return await newDeck.save();
   }
 

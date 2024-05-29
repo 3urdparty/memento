@@ -40,12 +40,14 @@
   </MultiSelect>
 </template>
 <script setup lang="ts">
+import { User } from '@backend/users/schemas/user.schema';
 import { useVModel } from '@vueuse/core';
 import MultiSelect from 'primevue/multiselect';
+import { ref, watch } from 'vue';
 interface Props {
   options: App.Models.User[];
   modelValue: App.Models.User[];
-  multiple: boolean;
+  multiple?: boolean;
   loading: boolean;
 }
 
@@ -57,5 +59,10 @@ const props = withDefaults(defineProps<Props>(), {
   multiple: () => false,
 });
 const emit = defineEmits<Emits>();
-const selected = useVModel(props, 'modelValue', emit);
+const selected = ref<User[]>([]);
+watch(selected, (value) => {
+  //@ts-ignore
+  modelValue.value = value.map((v) => v._id);
+});
+const modelValue = useVModel(props, 'modelValue', emit);
 </script>

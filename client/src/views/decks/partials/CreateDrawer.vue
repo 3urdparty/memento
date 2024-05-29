@@ -15,7 +15,10 @@
     >
       <div>
         <ul class="space-y-3">
-          <li v-for="(property, name) in newForm">
+          {{
+            form
+          }}
+          <li v-for="(property, name) in form">
             <label
               for="difficulty"
               class="mb-2 text-sm font-medium text-slate-900 dark:text-white flex items-center capitalize justify-between"
@@ -65,38 +68,20 @@
               </button>
             </label>
             <InputText
-              v-model="newForm[name].value"
+              v-model="form[name].value"
               class="w-full"
               v-if="property.type == 'text'"
             />
-            <Dropdown
-              v-model="newForm[name].value"
+            <DropDown
+              v-model="form[name].value"
               class="w-full"
               v-if="property.type == 'select'"
-              :options="property.options"
-              optionLabel="name"
+              :options="property.options as Option[]"
+              dataKey="value"
+              inputId="difficulty"
               :placeholder="property.placeholder as string"
             >
-              <template #value="{ value }">
-                <div v-if="value.value" class="flex items-center">
-                  <div class="flex items-center gap-2">
-                    <component :is="value.icon" class="w-4 h-4" />
-                    {{ value.name }}
-                  </div>
-                </div>
-                <span v-else>
-                  <span class="text-slate-500 dark:text-slate-400"
-                    >Select a difficulty</span
-                  >
-                </span>
-              </template>
-              <template #option="{ option }">
-                <div class="flex items-center gap-1">
-                  <component :is="option.icon" class="w-4 h-4 mr-2" />
-                  <span>{{ option.name }}</span>
-                </div>
-              </template>
-            </Dropdown>
+            </DropDown>
 
             <FileUpload
               :multiple="false"
@@ -113,7 +98,7 @@
               :options="users"
               class="w-full"
               :loading="false"
-              v-model="newForm[name].value"
+              v-model="form[name].value"
               v-if="property.type == 'users'"
             />
 
@@ -121,13 +106,13 @@
               class="w-full"
               rows="5"
               cols="30"
-              v-model="newForm[name].value"
+              v-model="form[name].value"
               v-if="property.type == 'longtext'"
             />
 
             <MultiSelect
               v-if="property.type == 'multiselect'"
-              v-model="newForm[name].value"
+              v-model="form[name].value"
               class="w-full"
               display="chip"
               :options="property.options"
@@ -186,6 +171,7 @@ import { array, object, string } from 'yup';
 import { UserService } from '@/services/UserService';
 import { Deck, Field } from '@backend/decks/schemas/deck.schema';
 import { User } from '@backend/users/schemas/user.schema';
+import DropDown, { Option } from '@/components/DropDown.vue';
 
 interface Props {
   open: boolean;
@@ -206,7 +192,7 @@ const difficulties = [
   { name: 'Expert', value: 'expert', icon: Angry },
 ];
 
-const newForm = reactive<{ [key: string]: Field }>({
+const form = reactive<{ [key: string]: Field }>({
   name: {
     type: 'text',
     icon: FolderPen,
@@ -257,7 +243,7 @@ const newForm = reactive<{ [key: string]: Field }>({
 
 const onFileSelect = (e: FileUploadSelectEvent) => {
   console.log(e);
-  newForm.coverImage.value = e.files[0];
+  form.coverImage.value = e.files[0];
 };
 
 const users = ref<User[]>([]);
@@ -268,18 +254,30 @@ onMounted(() => {
   });
 });
 
+let DeckSchema = object({
+  name: string().required(),
+  description: string().required(),
+  tags: array().of(object()),
+});
+
+const errors = ref<string[]>([]);
+
 const createDeck = () => {
-  let formData = new FormData();
-  formData.append('file', newForm.coverImage.value as File);
-  formData.append('name', newForm.name.value);
-  formData.append('difficulty', newForm.difficulty.value.value);
-  formData.append(
-    'contributors',
-    newForm.contributors.value.map((c) => c._id),
-  );
-  formData.append('description', newForm.description.value);
-  formData.append('tags', newForm.tags.value);
-  formData.append('rating', newForm.rating.value);
+  const formValues = mapObject(form);
+
+  DeckSchema.validate(formValues)
+    .then((value) => {
+      console.log(value);
+    })
+    .catch((e) => {
+      console.warn(e.errors);
+    });
+
+  const formData = new FormData();
+
+  for (const key in formValues) {
+    formData.append(key, formValues[key] as string | File);
+  }
   instance
     .post('/decks', formData, {
       headers: {
@@ -298,10 +296,14 @@ const createDeck = () => {
     });
 };
 
-let DeckSchema = object({
-  name: string().required(),
-  description: string().required(),
-  icon: string().required(),
-  tags: array().of(string()).required(),
-});
+const mapObject = (obj: { [key: string]: Field }) => {
+  let result: { [key: string]: string | File | string[] } = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const element = obj[key];
+      result[key] = element.value;
+    }
+  }
+  return result;
+};
 </script>

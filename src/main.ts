@@ -8,7 +8,14 @@ async function bootstrap() {
     rawBody: true,
   });
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: false,
+    enableDebugMessages: true,
+    skipNullProperties: true,
+    transformOptions: {
+      enableImplicitConversion: true
+    }
+  }));
 
   app.setGlobalPrefix('api'); // New
   app.enableCors({

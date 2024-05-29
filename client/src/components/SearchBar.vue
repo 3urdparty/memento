@@ -52,7 +52,7 @@ import {
 import { useVModel } from '@vueuse/core';
 interface Props {
   search: string;
-  placeholder: string;
+  placeholder?: string;
 }
 interface Emits {
   (e: 'update:search', search: string): void;
