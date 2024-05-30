@@ -24,10 +24,11 @@
   </div>
 </template>
 <script setup lang="ts">
+import { Deck } from '@backend/decks/schemas/deck.schema';
 import { computed } from 'vue';
 
 interface Props {
-  difficulty: App.Models.Deck['difficulty'];
+  difficulty: Deck['difficulty'];
 }
 
 const props = withDefaults(defineProps<Props>(), {

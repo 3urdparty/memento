@@ -56,7 +56,7 @@ export class Deck {
   difficulty: string;
 
   @Factory(faker => faker.image.url())
-  @Prop({ required: false, get: (url: string) => `${process.env.IMAGES_URL}/${url}` })
+  @Prop({ required: false, get: (url: string | undefined) => url && `${process.env.IMAGES_URL}/${url}` })
   coverUrl: string;
 
   @Prop({ virtual: true, get: function() { return this.cards.length } })

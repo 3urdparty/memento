@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest, UseInterceptors, UploadedFile, UsePipes, ValidationPipe } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { Deck } from './schemas/deck.schema';
 import mongoose, { ObjectId } from 'mongoose';
@@ -47,6 +47,7 @@ export class DecksController {
   }))
 
   async create(@UploadedFile() file: Express.Multer.File, @Body() deck: CreateDeckDto): Promise<Deck> {
+    console.log('Deck', deck)
     if (file)
       deck.coverUrl = file.filename;
     return await this.decksService.create(deck);

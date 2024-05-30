@@ -10,21 +10,15 @@
   >
     <template #chip="{ value }">
       <div class="flex items-center gap-2">
-        <img
-          v-if="value.imageUrl"
-          :src="value.imageUrl"
-          alt="avatar"
-          class="w-6 h-6 rounded-full"
-        />
+        <Avatar v-if="value.imageUrl" v-bind="value.avatar" class="w--7 h-7" />
         <span>{{ value.name }}</span>
       </div>
     </template>
     <template #option="{ option }">
       <div class="flex items-center gap-2">
-        <img
+        <Avatar
           v-if="option.imageUrl"
-          :src="option.imageUrl"
-          alt="avatar"
+          v-bind="option.avatar"
           class="w-6 h-6 rounded-full"
         />
         <span>{{ option.name }}</span>
@@ -44,6 +38,7 @@ import { User } from '@backend/users/schemas/user.schema';
 import { useVModel } from '@vueuse/core';
 import MultiSelect from 'primevue/multiselect';
 import { ref, watch } from 'vue';
+import { Avatar } from 'vue3-avataaars';
 interface Props {
   options: App.Models.User[];
   modelValue: App.Models.User[];

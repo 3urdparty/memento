@@ -2,7 +2,14 @@
   <Card>
     <div>
       <div class="relative h-40">
-        <img :src="deck.coverUrl" class="object-cover w-full h-full -mt-1" />
+        <img
+          :src="deck.coverUrl"
+          class="object-cover w-full h-full -mt-1"
+          v-if="deck.coverUrl"
+        />
+        <div v-else class="w-full h-full flex items-center justify-center">
+          <Spade class="h-20 w-20 text-green-400/40" />
+        </div>
         <div class="w-full bottom-0 absolute px-2 pb-2 flex items-center gap-2">
           <span
             v-for="property in deck.properties"
@@ -46,21 +53,12 @@
         </div>
         <dl class="flex w-full flex-none justify-between gap-x-8 sm:w-auto">
           <div class="flex -space-x-0.5 mt-2 pl-2">
-            <dt class="sr-only">Commenters</dt>
-            <dd
-              v-for="(owner, idx) in deck.contributors.slice(0, 3)"
+            <dt class="sr-only">Contributors</dt>
+            <span
+              v-for="(contributor, idx) in deck.contributors.slice(0, 3)"
               :key="idx"
             >
-              <img
-                class="h-6 w-6 rounded-full bg-gray-50 ring-1 ring-green-500/80"
-                :src="owner.imageUrl"
-                :alt="owner.name"
-              />
-            </dd>
-            <span
-              class="bg-slate-400/50 rounded-full text-slate-100/80 font-semibold text-xs px-1 h-6 w-6 flex items-center justify-center ring-1 ring-green-500/80"
-            >
-              +{{ deck.contributors.length - 3 }}
+              <Avatar v-bind="contributor.avatar" class="w-8 h-8" />
             </span>
           </div>
           <div class="flex w-16 gap-x-2.5">
@@ -81,12 +79,17 @@
 
 <script setup lang="ts">
 import Card from '@/components/Card.vue';
-import { Check, Repeat, RectangleVertical } from 'lucide-vue-next';
+import { Check, Repeat, RectangleVertical, Spade } from 'lucide-vue-next';
 import DifficultyLevel from '@/components/DifficultyLevel.vue';
 import { RouterLink } from 'vue-router';
+import { Deck } from '@backend/decks/schemas/deck.schema';
+import { Avatar, Factory } from 'vue3-avataaars';
 
+const avatarProps = Factory({
+  isCircle: true,
+});
 interface Props {
-  deck: App.Models.Deck;
+  deck: Deck;
 }
 defineProps<Props>();
 </script>

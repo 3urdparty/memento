@@ -10,7 +10,7 @@ export class DrawersService {
   ) { }
 
   async findAll(): Promise<Drawer[]> {
-    return await this.drawerModel.find().populate('decks', null, Deck.name).exec();
+    return await this.drawerModel.find().populate({ path: 'decks', populate: { path: 'contributors' } }).exec();
   }
 
   async findOne(id: string): Promise<Drawer> {

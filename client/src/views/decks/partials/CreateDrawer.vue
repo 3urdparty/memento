@@ -15,9 +15,6 @@
     >
       <div>
         <ul class="space-y-3">
-          {{
-            form
-          }}
           <li v-for="(property, name) in form">
             <label
               for="difficulty"
@@ -276,8 +273,17 @@ const createDeck = () => {
   const formData = new FormData();
 
   for (const key in formValues) {
-    formData.append(key, formValues[key] as string | File);
+    if (formValues[key] instanceof Array) {
+      const array = formValues[key] as string[];
+      for (var i = 0; i < array.length; i++) {
+        formData.append(key + '[]', array[i]);
+      }
+    } else {
+      formData.append(key, formValues[key] as string | File);
+    }
   }
+
+  console.log('conty', formData.getAll('contributors[]'));
   instance
     .post('/decks', formData, {
       headers: {

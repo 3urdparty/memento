@@ -11,7 +11,7 @@ export class DecksService {
     @InjectModel(Drawer.name) private readonly drawerModel: Model<Drawer>) { }
 
   async findAll(): Promise<Deck[]> {
-    return await this.deckModel.find().populate('cards').exec();
+    return await this.deckModel.find().populate(['cards', 'contributors']).exec();
   }
 
   async findOne(id: string): Promise<Deck> {
@@ -20,7 +20,6 @@ export class DecksService {
 
   async create(deck: CreateDeckDto): Promise<Deck> {
     const newDeck = new this.deckModel(deck);
-    console.log(newDeck);
     const drawer = (await this.drawerModel.find().exec())[0]
     //@ts-ignore
 

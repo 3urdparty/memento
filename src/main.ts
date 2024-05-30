@@ -12,9 +12,11 @@ async function bootstrap() {
     whitelist: false,
     enableDebugMessages: true,
     skipNullProperties: true,
-    transformOptions: {
-      enableImplicitConversion: true
-    }
+
+    // transform: true,
+    // transformOptions: {
+    //   enableImplicitConversion: true,
+    // }
   }));
 
   app.setGlobalPrefix('api'); // New
