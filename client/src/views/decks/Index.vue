@@ -18,42 +18,12 @@
 
     <ul class="mt-4">
       <!-- Drawer Section -->
-      <li v-for="drawer in drawers">
+      <li v-for="(_, idx) in drawers">
         <!-- Drawer Header  -->
-        <div class="border-b border-slate-200/50 pb-5">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2 w-1/3">
-              <!-- Title -->
-              <EditInput v-model="drawer.name" />
-              <!-- Tags -->
-              <Badge v-for="tag in drawer.tags"> {{ tag.name }}</Badge>
-            </div>
-
-            <div class="mt-4 flex flex-shrink-0 md:ml-4 md:mt-0">
-              <button
-                @click="open = true"
-                type="button"
-                class="ml-3 inline-flex items-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
-              >
-                <Plus class="w-5 h-5 text-slate-200" />
-              </button>
-            </div>
-          </div>
-
-          <!-- Description -->
-          <!-- <Textarea v-model="drawer.description" class="w-full mt-2" v-model="drawer.description"/> -->
-          <p class="mt-2 max-w-4xl text-sm text-slate-500">
-            {{ drawer.description }}
-          </p>
-        </div>
-        <ul class="grid grid-cols-4 mt-4 gap-4">
-          <li v-for="deck in drawer.decks">
-            <Deck :deck="deck" />
-          </li>
-        </ul>
+        <DrawerItem v-model="drawers[idx]" />
       </li>
     </ul>
-    <div>
+    <div class="mt-10">
       <button
         @click="createDrawer"
         type="button"
@@ -66,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { Drawer } from '../../../../src/drawers/schema/drawer.schema';
 import Badge from '@/components/Badge.vue';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
@@ -74,18 +44,26 @@ import SearchBar from '@/components/SearchBar.vue';
 import CreateDrawer from './partials/CreateDrawer.vue';
 import { useAxios } from '@vueuse/integrations/useAxios';
 import { object, string } from 'yup';
-import { DatabaseIcon, Plus, Spade } from 'lucide-vue-next';
+import { DatabaseIcon, Pen, Pencil, Plus, Spade, Trash } from 'lucide-vue-next';
 import EditInput from '@/components/EditInput.vue';
 import { instance } from '@/axios/instance';
 import Deck from './partials/Deck.vue';
+import { Input } from 'postcss';
+import InputText from 'primevue/inputtext';
+import Textarea from 'primevue/textarea';
+import Button from '@/components/Button.vue';
+import DrawerItem from './partials/Drawer.vue';
+import { DrawerService } from '@/services/DrawerService';
 const query = reactive({
   search: '',
 });
 
-const { data: drawers, execute: fetchDrawers } = useAxios<Drawer[]>(
-  '/drawers',
-  instance,
-);
+const drawers = ref<Drawer[]>([]);
+onMounted(() => {
+  DrawerService.getDrawers().then((res) => {
+    drawers.value = res.data;
+  });
+});
 const open = ref(false);
 export interface Property {
   name: string;

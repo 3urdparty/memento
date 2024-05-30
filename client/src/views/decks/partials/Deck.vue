@@ -1,14 +1,23 @@
 <template>
   <Card>
-    <div>
+    <div class="group">
       <div class="relative h-40">
+        <Button
+          class="absolute bg-red-400 hover:bg-red-300 hover:border-red-600 rounded-md px-2 py-2 border-b-4 border-red-700 top-2 right-2 group transition"
+        >
+          <Trash
+            class="h-5 text-red-700 group-hover group-hover:text-red-800"
+          />
+        </Button>
         <img
           :src="deck.coverUrl"
           class="object-cover w-full h-full -mt-1"
           v-if="deck.coverUrl"
         />
         <div v-else class="w-full h-full flex items-center justify-center">
-          <Spade class="h-20 w-20 text-green-400/40" />
+          <Spade
+            class="h-20 w-20 text-green-400/40 group-hover:text-green-400/80"
+          />
         </div>
         <div class="w-full bottom-0 absolute px-2 pb-2 flex items-center gap-2">
           <span
@@ -19,7 +28,7 @@
           </span>
         </div>
         <div
-          class="absolute w-full bg-gradient-to-t from-slate-700/40 to-slate-400/0 bottom-0 h-20"
+          class="absolute w-full bg-gradient-to-t from-slate-700/40 to-slate-400/0 bottom-0 h-20 group-hover:from-slate-500/20 transition"
         />
       </div>
       <div
@@ -52,13 +61,17 @@
           <DifficultyLevel :difficulty="deck.difficulty" />
         </div>
         <dl class="flex w-full flex-none justify-between gap-x-8 sm:w-auto">
-          <div class="flex -space-x-0.5 mt-2 pl-2">
+          <div class="flex space-x-0.5 mt-2">
             <dt class="sr-only">Contributors</dt>
             <span
               v-for="(contributor, idx) in deck.contributors.slice(0, 3)"
               :key="idx"
             >
-              <Avatar v-bind="contributor.avatar" class="w-8 h-8" />
+              <RouterLink :to="`/users/`" class="w-full">
+                <button v-tooltip.right="{ value: '✔ ' + contributor.name }">
+                  <Avatar v-bind="contributor.avatar" class="w-8 h-8" />
+                </button>
+              </RouterLink>
             </span>
           </div>
           <div class="flex w-16 gap-x-2.5">
@@ -79,11 +92,19 @@
 
 <script setup lang="ts">
 import Card from '@/components/Card.vue';
-import { Check, Repeat, RectangleVertical, Spade } from 'lucide-vue-next';
+import {
+  Check,
+  Repeat,
+  RectangleVertical,
+  Spade,
+  Pencil,
+  Trash,
+} from 'lucide-vue-next';
 import DifficultyLevel from '@/components/DifficultyLevel.vue';
 import { RouterLink } from 'vue-router';
 import { Deck } from '@backend/decks/schemas/deck.schema';
 import { Avatar, Factory } from 'vue3-avataaars';
+import Button from '@/components/Button.vue';
 
 const avatarProps = Factory({
   isCircle: true,

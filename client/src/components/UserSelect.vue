@@ -9,9 +9,9 @@
     placeholder="Add Contributors"
   >
     <template #chip="{ value }">
-      <div class="flex items-center gap-2">
-        <Avatar v-if="value.imageUrl" v-bind="value.avatar" class="w--7 h-7" />
-        <span>{{ value.name }}</span>
+      <div class="flex items-center gap-2 -mt-1 -mx-1 py-0.5 px-0.5 pr-1">
+        <Avatar v-if="value.imageUrl" v-bind="value.avatar" class="w-7 h-7" />
+        <span class="pt-1">{{ value.name }}</span>
       </div>
     </template>
     <template #option="{ option }">
