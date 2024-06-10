@@ -1,8 +1,13 @@
-import { OmitType, PartialType } from "@nestjs/mapped-types";
-import { Drawer } from "../schema/drawer.schema";
-import { ObjectId } from "mongoose";
+import { IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateDrawerDto extends PartialType(OmitType(Drawer, ['decks']))
-{
-  decks: ObjectId[];
+export class CreateDrawerDto {
+
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  description: string;
 }

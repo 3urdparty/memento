@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -12,12 +12,21 @@ async function bootstrap() {
     whitelist: false,
     enableDebugMessages: true,
     skipNullProperties: true,
+    transform: true,
+    exceptionFactory: (errors) => {
+      const result = errors.reduce((acc, error) => {
+        const propertyName = error.property;
+        const errorMessage = error.constraints[Object.keys(error.constraints)[0]];
+        return {
+          ...acc,
+          [propertyName]: errorMessage,
+        };
+      }, {});
 
-    // transform: true,
-    // transformOptions: {
-    //   enableImplicitConversion: true,
-    // }
+      return new BadRequestException(result);
+    }
   }));
+
 
   app.setGlobalPrefix('api'); // New
   app.enableCors({
@@ -37,6 +46,9 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document)
 
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 3000,
+    () => {
+      console.log(`🚀 Application running at port ${process.env.PORT || 3000}`)
+    });
 }
 bootstrap();

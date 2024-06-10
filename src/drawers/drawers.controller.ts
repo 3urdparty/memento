@@ -3,6 +3,9 @@ import { DrawersService } from './drawers.service';
 import { Drawer } from './schema/drawer.schema';
 import mongoose from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateDrawerDto } from './dto/update-drawer.dto';
+import { CreateDeckDto } from 'src/decks/dto/create-deck.dto';
+import { CreateDrawerDto } from './dto/create-drawer.dto';
 
 @ApiTags('drawers')
 @Controller('drawers')
@@ -14,34 +17,23 @@ export class DrawersController {
     return await this.drawersService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Drawer> {
-    return await this.drawersService.findOne(id);
+  @Get(':slug')
+  async findOne(@Param('slug') slug: string): Promise<Drawer> {
+    return await this.drawersService.findOneBySlug(slug);
   }
 
-
   @Post()
-  async create(@Req() req: RawBodyRequest<Request>): Promise<Drawer> {
-    console.log(req.body)
-    const drawer = {
-      name: 'New Drawer',
-      icon: 'Icon',
-      description: 'New Drawer',
-      tags: [],
-      slug: '',
-      url: ''
-
-    }
+  async create(@Body() drawer: CreateDrawerDto): Promise<Drawer> {
     return await this.drawersService.create(drawer);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() drawer: Drawer): Promise<Drawer> {
-    return await this.drawersService.update(id, drawer);
+  @Put(':slug')
+  async update(@Param('slug') slug: string, @Body() drawer: UpdateDrawerDto): Promise<Drawer> {
+    return await this.drawersService.updateOneBySlug(slug, drawer);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string): Promise<Drawer> {
-    return await this.drawersService.delete(id);
+  @Delete(':slug')
+  async delete(@Param('slug') slug: string): Promise<Drawer> {
+    return await this.drawersService.deleteBySlug(slug);
   }
 }

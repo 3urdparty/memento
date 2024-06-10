@@ -12,8 +12,11 @@ export type DrawerDocument = Drawer & Document;
 @Schema({
   timestamps: { createdAt: 'created', updatedAt: 'updated' },
   toJSON: {
-    getters: true,
+    virtuals: true
   },
+  toObject: {
+    virtuals: true
+  }
 })
 
 
@@ -37,11 +40,7 @@ export class Drawer {
   @Prop({ type: [Types.ObjectId], ref: 'Deck', default: [] })
   decks?: Deck[];
 
-  @Prop({
-    virtual: true, get: function() {
-      return this.name.toLowerCase().replace(/ /g, '-')
-    }
-  })
+  @Prop({ required: false })
   slug: string;
 
   @Prop({
@@ -59,7 +58,9 @@ export const DrawerSchema = SchemaFactory.createForClass(Drawer)
 
 DrawerSchema.pre('save', function(next) {
   //@ts-ignore
-  this.decks = this.decks.map(deck => deck._id)
+  // this.decks = this.decks.map(deck => deck._id)
+  this.slug =
+    this.name.toLowerCase().replace(/ /g, '-')
   next()
 })
 

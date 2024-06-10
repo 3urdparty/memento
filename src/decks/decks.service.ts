@@ -15,7 +15,7 @@ export class DecksService {
   }
 
   async findOne(id: string): Promise<Deck> {
-    return await this.deckModel.findById(id).exec();
+    return await this.deckModel.findById(id).populate(['contributors', 'cards']).exec();
   }
 
   async create(deck: CreateDeckDto): Promise<Deck> {
@@ -34,5 +34,9 @@ export class DecksService {
 
   async delete(id: string): Promise<Deck> {
     return await this.deckModel.findByIdAndDelete(id);
+  }
+
+  async findBySlug(slug: string): Promise<Deck> {
+    return await this.deckModel.findOne({ slug }).populate(['contributors', 'cards']).exec();
   }
 }

@@ -14,25 +14,26 @@ import { AuthModule } from './auth/auth.module';
 import { join } from 'path';
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.MONGODB_URL),
+  imports: [
+    ConfigModule.forRoot({
+      expandVariables: true,
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGODB_URL),
     FlashcardsModule,
     UsersModule,
     DrawersModule,
     DecksModule,
     AuthModule,
-  ConfigModule.forRoot({
-    expandVariables: true,
-  }),
-  ServeStaticModule.forRoot({ // New
-    renderPath: '/',
-    rootPath: join(__dirname, '..', 'client'),
-  }), // New
-  ServeStaticModule.forRoot({ // New 
-    renderPath: '/storage', // const name = new type(arguments);
-    rootPath: 'storage', // New
-    serveRoot: '/storage', // New
-
-  })
+    ServeStaticModule.forRoot({ // New
+      renderPath: '/',
+      rootPath: join(__dirname, '..', 'client'),
+    }), // New
+    ServeStaticModule.forRoot({ // New 
+      renderPath: '/storage', // const name = new type(arguments);
+      rootPath: 'storage', // New
+      serveRoot: '/storage', // New
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

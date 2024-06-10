@@ -9,7 +9,10 @@ import { Property } from '../entities/deck.entity';
 import { Factory } from 'nestjs-seeder';
 import { Drawer } from 'src/drawers/schema/drawer.schema';
 
-export type DeckDocument = HydratedDocument<Deck>
+
+export type DeckDocument = Deck & { _id: string };
+
+
 
 
 export class Field {
@@ -26,9 +29,10 @@ export class Field {
     | 'file'
     | 'checkbox'
     | 'select'
-    | 'users';
+    | 'users' | 'rating';
   icon?: any;
   value?: any;
+  name?: string;
   required?: boolean;
   removable?: boolean;
   placeholder?: string;
@@ -48,7 +52,7 @@ export class Field {
 
 export class Deck {
 
-  @Prop({ virtual: true, get: function() { return this._id } })
+  @Prop({ required: false })
   slug: string;
 
   @Factory((faker) => faker.helpers.arrayElement(['easy', 'medium', 'hard', 'very hard', 'expert']))
@@ -79,7 +83,7 @@ export class Deck {
   rating: number;
 
   @Prop({ virtual: true, get: function() { return [] } })
-  recentStudents?: number;
+  recentStudents?: User[];
 
   @Factory(() => [])
   @Prop({ required: true, default: [] })
@@ -107,8 +111,16 @@ export class Deck {
 
   @Prop({ type: [Types.ObjectId], ref: Drawer.name })
   drawers?: Drawer[];
+
 }
 
-
-
 export const DeckSchema = SchemaFactory.createForClass(Deck)
+
+DeckSchema.pre('save', function(next) {
+  //@ts-ignore
+  // this.decks = this.decks.map(deck => deck._id)
+  this.slug =
+    this.name.toLowerCase().replace(/ /g, '-')
+  next()
+})
+

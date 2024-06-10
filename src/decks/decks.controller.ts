@@ -18,9 +18,9 @@ export class DecksController {
     return await this.decksService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Deck> {
-    return await this.decksService.findOne(id);
+  @Get(':slug')
+  async findOne(@Param('slug') slug: string): Promise<Deck> {
+    return await this.decksService.findBySlug(slug);
   }
 
 
@@ -45,7 +45,6 @@ export class DecksController {
       },
     }),
   }))
-
   async create(@UploadedFile() file: Express.Multer.File, @Body() deck: CreateDeckDto): Promise<Deck> {
     console.log('Deck', deck)
     if (file)
