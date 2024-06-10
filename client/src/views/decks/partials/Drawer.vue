@@ -2,10 +2,10 @@
   <div>
     <div class="border-b border-slate-200/50 pb-5">
       <div class="flex justify-between items-center">
-        <div class="flex items-center gap-2 w-1/3">
+        <div class="flex items-center gap-2 w-1/3 h-10">
           <!-- Title -->
-          <InputText v-model="drawer.name" v-if="editMode" />
-          <h1 v-else>
+          <InputText v-model="drawer.name" v-if="editMode" class="w-2/3" />
+          <h1 v-else class="">
             {{ drawer.name }}
           </h1>
           <!-- Tags -->
@@ -16,21 +16,20 @@
           <Button
             class="bg-yellow-400 border-yellow-600 hover:bg-yellow-300"
             v-tooltip="'Toggle Edit Mode'"
-            @click="editMode = !editMode"
+            @click="
+              editMode = !editMode;
+              if (!editMode) emits('save', drawer);
+            "
           >
             <Pen v-if="!editMode" class="w-4 h-4 text-yellow-600" />
             <Save class="w-4 h-4 text-yellow-600" v-else />
           </Button>
-          <Button
-            @click="emits('addDeck')"
-            type="button"
-            v-tooltip="'Add Deck'"
-          >
+          <Button @click="emits('add')" type="button" v-tooltip="'Add Deck'">
             <Plus class="w-5 h-5 text-green-600" />
           </Button>
 
           <Button
-            @click="emits('addDeck')"
+            @click="emits('delete', drawer)"
             type="button"
             v-tooltip="'Add Deck'"
             class="bg-red-400 border-red-600 hover:bg-red-300"
@@ -64,7 +63,7 @@ import InputText from 'primevue/inputtext';
 import Button from '@/components/Button.vue';
 import { Drawer } from '@backend/drawers/schema/drawer.schema';
 import { useVModel } from '@vueuse/core';
-import { Pen, Pencil, Plus, Save, Trash } from 'lucide-vue-next';
+import { Pen, Plus, Save, Trash } from 'lucide-vue-next';
 import Badge from '@/components/Badge.vue';
 import Textarea from 'primevue/textarea';
 import Deck from './Deck.vue';
@@ -74,8 +73,10 @@ interface Props {
   modelValue: Drawer;
 }
 interface Emits {
-  (e: 'addDeck'): void;
+  (e: 'add'): void;
+  (e: 'delete', value: Drawer): void;
   (e: 'update:modelValue', value: Drawer): void;
+  (e: 'save', value: Drawer): void;
 }
 const emits = defineEmits<Emits>();
 const props = defineProps<Props>();

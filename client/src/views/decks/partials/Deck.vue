@@ -9,6 +9,17 @@
             class="h-5 text-red-700 group-hover group-hover:text-red-800"
           />
         </Button>
+        <div
+          class="flex items-center gap-2 w-full absolute bottom-0 left-0 mx-1"
+        >
+          <Chip
+            class="bg-slate-400/80 text-green-400/80"
+            v-for="tag in deck.tags"
+            :key="tag"
+          >
+            {{ tag.value }}
+          </Chip>
+        </div>
         <img
           :src="deck.coverUrl"
           class="object-cover w-full h-full -mt-1"
@@ -105,6 +116,7 @@ import { RouterLink } from 'vue-router';
 import { Deck } from '@backend/decks/schemas/deck.schema';
 import { Avatar, Factory } from 'vue3-avataaars';
 import Button from '@/components/Button.vue';
+import Chip from 'primevue/chip';
 
 const avatarProps = Factory({
   isCircle: true,

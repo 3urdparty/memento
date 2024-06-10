@@ -1,10 +1,21 @@
 <template>
   <!-- drawer component -->
-  <Sidebar v-model:visible="open" position="right" class="w-full max-w-md">
+  <Sidebar v-model:visible="open" position="right" class="w-full max-w-xl">
     <template #header>
-      <div class="flex items-center">
-        <SquareAsterisk class="w-5 h-6 text-slate-400" />
-        <h2 id="drawer-label" class="ml-2 text-lg font-semibold">New Deck</h2>
+      <div class="flex items-center gap-10">
+        <div class="flex items-center gap-1">
+          <Spade class="w-5 h-6 text-slate-400" />
+          <h2 id="drawer-label" class="ml-2 text-lg font-semibold">New Deck</h2>
+        </div>
+
+        <Button
+          class="bg-yellow-400 border-yellow-600 hover:bg-yellow-300"
+          v-tooltip="'Toggle Edit Mode'"
+          @click="editMode = !editMode"
+        >
+          <Pen v-if="!editMode" class="w-4 h-4 text-yellow-600" />
+          <Save class="w-4 h-4 text-yellow-600" v-else />
+        </Button>
       </div>
     </template>
     <div
@@ -44,6 +55,7 @@
 
                 <input
                   type="text"
+                  :disabled="!(property.editable && editMode)"
                   class="bg-transparent border-none outline-none focus:ring-0 text-sm px-0 py-0 capitalize"
                   :value="name"
                 />
@@ -67,6 +79,7 @@
             <InputText
               v-model="form[name].value"
               class="w-full"
+              :invalid="!!errors[name]"
               v-if="property.type == 'text'"
             />
             <DropDown
@@ -74,6 +87,7 @@
               class="w-full"
               v-if="property.type == 'select'"
               :options="property.options as Option[]"
+              :invalid="!!errors[name]"
               dataKey="value"
               inputId="difficulty"
               :placeholder="property.placeholder as string"
@@ -83,8 +97,9 @@
             <FileUpload
               :multiple="false"
               v-if="property.type == 'file'"
+              class="border-b-2 w-fit overflow-clip"
               mode="basic"
-              name="demo[]"
+              name="demo"
               url="/api/upload"
               accept="image/*"
               :maxFileSize="5000000"
@@ -94,6 +109,7 @@
             <UserSelect
               :options="users"
               class="w-full"
+              :invalid="!!errors[name]"
               :loading="false"
               v-model="form[name].value"
               v-if="property.type == 'users'"
@@ -103,6 +119,7 @@
               class="w-full"
               rows="5"
               cols="30"
+              :invalid="!!errors[name]"
               v-model="form[name].value"
               v-if="property.type == 'longtext'"
             />
@@ -110,6 +127,7 @@
             <MultiSelect
               v-if="property.type == 'multiselect'"
               v-model="form[name].value"
+              :invalid="!!errors[name]"
               class="w-full"
               display="chip"
               :options="property.options"
@@ -122,17 +140,28 @@
                 </div>
               </template>
             </MultiSelect>
+
+            <Rating
+              v-if="property.type == 'rating'"
+              v-model="form[name].value"
+              class="w-full"
+              :cancel="false"
+              :readonly="false"
+            />
+            <span class="text-red-400 text-sm">
+              {{ errors[name] }}
+            </span>
           </li>
         </ul>
 
         <div class="flex justify-end mt-4">
-          <button
+          <Button
             @click="createDeck"
             type="button"
-            class="rounded-md bg-green-400 px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+            class="rounded-md bg-green-400 px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500 border-green-600 hover:bg-green-300 text-green-800 hover:text-green-900"
           >
             Create
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -149,26 +178,29 @@ import {
   Frown,
   GripVertical,
   Meh,
+  Pen,
   Pencil,
+  Save,
   Smile,
+  Spade,
   SquareAsterisk,
   Trash,
 } from 'lucide-vue-next';
 import InputText from 'primevue/inputtext';
 import { useVModel } from '@vueuse/core';
-import Dropdown from 'primevue/dropdown';
 import FileUpload, { FileUploadSelectEvent } from 'primevue/fileupload';
 import UserSelect from '@/components/UserSelect.vue';
 import Textarea from 'primevue/textarea';
 import MultiSelect from 'primevue/multiselect';
 import Sidebar from 'primevue/sidebar';
-import { useAxios } from '@vueuse/integrations/useAxios.mjs';
-import { instance } from '@/axios/instance';
 import { array, object, string } from 'yup';
 import { UserService } from '@/services/UserService';
-import { Deck, Field } from '@backend/decks/schemas/deck.schema';
+import { Field } from '@backend/decks/schemas/deck.schema';
 import { User } from '@backend/users/schemas/user.schema';
 import DropDown, { Option } from '@/components/DropDown.vue';
+import Button from '@/components/Button.vue';
+import { DecksService } from '@/services/DecksService';
+import Rating from 'primevue/rating';
 
 interface Props {
   open: boolean;
@@ -193,7 +225,7 @@ const form = reactive<{ [key: string]: Field }>({
   name: {
     type: 'text',
     icon: FolderPen,
-    value: 'Chapter 1',
+    value: null,
     required: true,
     removable: false,
     placeholder: 'Name',
@@ -210,7 +242,7 @@ const form = reactive<{ [key: string]: Field }>({
   difficulty: {
     type: 'select',
     icon: FlagIcon,
-    value: 'easy',
+    value: null,
     required: true,
     removable: false,
     placeholder: 'Select your difficulty',
@@ -233,7 +265,7 @@ const form = reactive<{ [key: string]: Field }>({
     options: [{ name: 'Computer Science', value: 'computerscience' }],
   },
   rating: {
-    value: 4,
+    value: 0,
     type: 'rating',
   },
 });
@@ -257,59 +289,28 @@ let DeckSchema = object({
   tags: array().of(object()),
 });
 
-const errors = ref<string[]>([]);
+const errors = ref<{ [key: string]: string }>({});
 
 const createDeck = () => {
-  const formValues = mapObject(form);
-
-  DeckSchema.validate(formValues)
-    .then((value) => {
-      console.log(value);
-    })
-    .catch((e) => {
-      console.warn(e.errors);
-    });
-
-  const formData = new FormData();
-
-  for (const key in formValues) {
-    if (formValues[key] instanceof Array) {
-      const array = formValues[key] as string[];
-      for (var i = 0; i < array.length; i++) {
-        formData.append(key + '[]', array[i]);
-      }
-    } else {
-      formData.append(key, formValues[key] as string | File);
-    }
-  }
-
-  console.log('conty', formData.getAll('contributors[]'));
-  instance
-    .post('/decks', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then(function () {
-      console.log('SUCCESS!!');
-    })
-    .catch((e) => {
-      console.log(e);
-    })
-    .finally(() => {
+  errors.value = {};
+  console.log(mapObject(form));
+  DecksService.createDrawer(mapObject(form))
+    .then((response) => {
       open.value = false;
       emits('submit');
+    })
+    .catch((error) => {
+      errors.value = error.response.data;
     });
 };
 
 const mapObject = (obj: { [key: string]: Field }) => {
   let result: { [key: string]: string | File | string[] } = {};
   for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      const element = obj[key];
-      result[key] = element.value;
-    }
+    result[key] = obj[key].value;
   }
   return result;
 };
+
+const editMode = ref(true);
 </script>

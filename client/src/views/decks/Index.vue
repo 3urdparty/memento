@@ -20,7 +20,12 @@
       <!-- Drawer Section -->
       <li v-for="(_, idx) in drawers">
         <!-- Drawer Header  -->
-        <DrawerItem v-model="drawers[idx]" />
+        <DrawerItem
+          v-model="drawers[idx]"
+          @save="updateDrawer"
+          @add="open = true"
+          @delete="deleteDrawer"
+        />
       </li>
     </ul>
     <div class="mt-10">
@@ -38,19 +43,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
 import { Drawer } from '../../../../src/drawers/schema/drawer.schema';
-import Badge from '@/components/Badge.vue';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import CreateDrawer from './partials/CreateDrawer.vue';
-import { useAxios } from '@vueuse/integrations/useAxios';
-import { object, string } from 'yup';
-import { DatabaseIcon, Pen, Pencil, Plus, Spade, Trash } from 'lucide-vue-next';
-import EditInput from '@/components/EditInput.vue';
-import { instance } from '@/axios/instance';
-import Deck from './partials/Deck.vue';
-import { Input } from 'postcss';
-import InputText from 'primevue/inputtext';
-import Textarea from 'primevue/textarea';
 import Button from '@/components/Button.vue';
 import DrawerItem from './partials/Drawer.vue';
 import { DrawerService } from '@/services/DrawerService';
@@ -60,9 +55,7 @@ const query = reactive({
 
 const drawers = ref<Drawer[]>([]);
 onMounted(() => {
-  DrawerService.getDrawers().then((res) => {
-    drawers.value = res.data;
-  });
+  fetchDrawers();
 });
 const open = ref(false);
 export interface Property {
@@ -81,27 +74,41 @@ export interface Property {
     | 'select';
 }
 
-const { execute: requestCreateDrawer } = useAxios<Drawer>(
-  '/drawers',
-  {
-    method: 'POST',
-  },
-  instance,
-  {
-    immediate: false,
-  },
-);
 const createDrawer = () => {
-  requestCreateDrawer({
-    data: {
-      icon: 'icon',
-      name: 'Algorithms analysis and design',
-      description: 'Subject at UNI',
-    },
+  DrawerService.createDrawer({
+    name: 'Algorithms analysis and design',
+    description: 'Subject at UNI',
   })
     .then(() => {
       console.log('Sent');
     })
+    .catch((e) => {
+      console.log(e);
+    })
+    .finally(() => {
+      fetchDrawers();
+    });
+};
+const updateDrawer = (drawer: Drawer) => {
+  DrawerService.updateDrawer(drawer)
+    .then(() => {})
+    .catch((e) => {
+      console.log(e);
+    })
+    .finally(() => {
+      fetchDrawers();
+    });
+};
+
+const fetchDrawers = () => {
+  DrawerService.getDrawers().then((res) => {
+    drawers.value = res.data;
+  });
+};
+
+const deleteDrawer = (drawer: Drawer) => {
+  DrawerService.deleteDrawer(drawer)
+    .then(() => {})
     .catch((e) => {
       console.log(e);
     })

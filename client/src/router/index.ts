@@ -4,6 +4,7 @@ import HomeView from '@/views/Home.vue'
 import DeckIndexView from '@/views/decks/Index.vue'
 import DeckShowView from '@/views/decks/Show.vue'
 import ReviewView from '@/views/review/Index.vue'
+import Login from '@/views/auth/Login.vue'
 
 const routes = [
   {
@@ -29,6 +30,19 @@ const routes = [
       hideLayout: true,
     },
   },
+  {
+    path: '/login',
+    meta: {
+
+      hideLayout: true,
+    },
+    component: Login
+  },
+
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  }
 ]
 
 const router = createRouter({
