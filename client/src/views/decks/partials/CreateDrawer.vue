@@ -195,7 +195,7 @@ import MultiSelect from 'primevue/multiselect';
 import Sidebar from 'primevue/sidebar';
 import { array, object, string } from 'yup';
 import { UserService } from '@/services/UserService';
-import { Field } from '@backend/decks/schemas/deck.schema';
+import { Deck, Field } from '@backend/decks/schemas/deck.schema';
 import { User } from '@backend/users/schemas/user.schema';
 import DropDown, { Option } from '@/components/DropDown.vue';
 import Button from '@/components/Button.vue';
@@ -271,7 +271,6 @@ const form = reactive<{ [key: string]: Field }>({
 });
 
 const onFileSelect = (e: FileUploadSelectEvent) => {
-  console.log(e);
   form.coverImage.value = e.files[0];
 };
 
@@ -283,21 +282,24 @@ onMounted(() => {
   });
 });
 
-let DeckSchema = object({
-  name: string().required(),
-  description: string().required(),
-  tags: array().of(object()),
-});
-
 const errors = ref<{ [key: string]: string }>({});
 
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 const createDeck = () => {
   errors.value = {};
   console.log(mapObject(form));
-  DecksService.createDrawer(mapObject(form))
+  DecksService.createDeck(mapObject(form) as any)
     .then((response) => {
       open.value = false;
       emits('submit');
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: `Deck '${(response.data as Deck).name}' created successfully`,
+        life: 3000,
+      });
     })
     .catch((error) => {
       errors.value = error.response.data;

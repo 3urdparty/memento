@@ -1,6 +1,7 @@
 import './style.css'
 import { createApp } from 'vue'
 import App from './App.vue'
+import ToastService from 'primevue/toastservice'
 import PrimeVue from "primevue/config"
 import router from './router'
 //@ts-ignore
@@ -20,6 +21,7 @@ app.use(PrimeVue, {
   pt: Lara
 });
 
+app.use(ToastService)
 app.directive('tooltip', Tooltip);
 
 app.use(router)

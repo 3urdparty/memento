@@ -17,25 +17,27 @@
     </div>
 
     <ul class="mt-4">
+      <TransitionGroup name="list" tag="ul">
+        <li v-for="(_, idx) in drawers">
+          <!-- Drawer Header  -->
+          <DrawerItem
+            v-model="drawers[idx]"
+            @save="updateDrawer"
+            @add="open = true"
+            @delete="deleteDrawer"
+          >
+            <template #deck="{ deck }">
+              <Deck :deck="deck" @delete="deleteDeck" />
+            </template>
+          </DrawerItem>
+        </li>
+      </TransitionGroup>
       <!-- Drawer Section -->
-      <li v-for="(_, idx) in drawers">
-        <!-- Drawer Header  -->
-        <DrawerItem
-          v-model="drawers[idx]"
-          @save="updateDrawer"
-          @add="open = true"
-          @delete="deleteDrawer"
-        />
-      </li>
     </ul>
     <div class="mt-10">
-      <button
-        @click="createDrawer"
-        type="button"
-        class="rounded-md bg-green-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
-      >
-        Add Drawer
-      </button>
+      <Button @click="createDrawer" type="button">
+        <span class="text-green-600 text-sm"> Add Drawer </span>
+      </Button>
     </div>
   </div>
 </template>
@@ -49,6 +51,10 @@ import CreateDrawer from './partials/CreateDrawer.vue';
 import Button from '@/components/Button.vue';
 import DrawerItem from './partials/Drawer.vue';
 import { DrawerService } from '@/services/DrawerService';
+import { DecksService } from '@/services/DecksService';
+import { useToast } from 'primevue/usetoast';
+import Deck from './partials/Deck.vue';
+
 const query = reactive({
   search: '',
 });
@@ -116,4 +122,28 @@ const deleteDrawer = (drawer: Drawer) => {
       fetchDrawers();
     });
 };
+
+const toast = useToast();
+
+const deleteDeck = (id: string) => {
+  DecksService.deleteDeck(id)
+    .then(() => {
+      fetchDrawers();
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Deck deleted successfully',
+        life: 3000,
+      });
+    })
+    .catch((e) => {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to delete deck',
+        life: 3000,
+      });
+    });
+};
 </script>
+<style scoped></style>

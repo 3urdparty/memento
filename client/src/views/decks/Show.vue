@@ -1,18 +1,17 @@
 <template>
-  <div>
+  <div v-if="deck">
     <BreadCrumbs />
-
     <div class="relative">
       <div class="mt-2 md:flex md:items-center md:justify-between">
-        <div class="min-w-0 flex-1 flex items-center gap-2">
+        <div class="min-w-0 flex-1 flex items-center gap-3">
           <h2
             class="text-2xl font-bold leading-7 text-white sm:truncate sm:text-3xl sm:tracking-tight"
           >
-            {{ query.name }}
+            {{ deck.name }}
           </h2>
           <div class="flex items-center mt-1 gap-2">
             <Badge
-              v-for="tag in query.tags"
+              v-for="tag in deck.tags"
               :key="tag.name"
               :color="tag.color"
               :icon="tag.icon"
@@ -30,37 +29,37 @@
     >
       <span class="flex items-center gap-1">
         <User class="text-sm w-5 text-green-300" />
-        {{ query.recentStudents }}
+        {{ deck.recentStudents.length }}
       </span>
 
       <span class="pl-3">
-        <Rating v-model="query.rating" :cancel="false" readonly />
+        <Rating v-model="deck.rating" :cancel="false" readonly />
       </span>
 
       <div class="pl-3 capitalize flex items-center gap-1">
         <DifficultyLevel
-          :difficulty="query.difficulty as App.Models.Deck['difficulty']"
+          :difficulty="deck.difficulty as App.Models.Deck['difficulty']"
         />
         <span class="mt-0.5">
-          {{ query.difficulty }}
+          {{ deck.difficulty }}
         </span>
       </div>
       <span> </span>
     </div>
 
     <p class="text-slate-400 mt-2">
-      {{ query.description }}
+      {{ deck.description }}
     </p>
     <div class="flex items-center gap-2 mt-4">
-      <Button class="">
-        <div class="pr-1 flex text-slate-200 pl-1 items-center gap-2">
+      <Button>
+        <div class="text-white flex items-center gap-1">
           <Play class="w-4 h-4" />
           Practice
         </div>
       </Button>
 
-      <Button class="">
-        <div class="pr-1 flex text-slate-200 pl-1 items-center gap-2">
+      <Button>
+        <div class="text-white flex items-center gap-1">
           <PenBox class="w-4 h-4" />
           Exam
         </div>
@@ -68,39 +67,45 @@
     </div>
 
     <div class="grid mt-4 gap-2">
-      <Card>
-        <div class="h-80 w-full p-8">
-          {{ query.flashcards[0].question }}
+      <Card class="bg-slate-700">
+        <div
+          class="h-80 w-full p-8 border border-slate-600 rounded-lg flex items-center justify-center"
+          v-if="deck.cards.length == 0"
+        >
+          <div class="flex items-center gap-2">
+            <Rabbit class="w-8 h-8" />
+            <span class="mt-2.5"> No cards in this deck </span>
+          </div>
         </div>
       </Card>
-      <div class="flex items-center gap-2 justify-between">
+      <div class="flex items-center gap-2 justify-between mt-2">
         <div class="flex items-center gap-2">
-          <Button>
-            <div class="p-1 text-slate-300">
+          <Button :disabled="deck.cards.length == 0">
+            <div class="p-0.5 text-white">
               <Play class="w-5 h-5" />
             </div>
           </Button>
-          <Button>
-            <div class="p-1 text-slate-300">
+          <Button :disabled="deck.cards.length == 0">
+            <div class="p-0.5 text-white">
               <Shuffle class="w-5 h-5" />
             </div>
           </Button>
         </div>
         <div class="flex items-center gap-3">
-          <Button>
-            <div class="p-1 text-slate-300">
+          <Button :disabled="deck.cards.length == 0">
+            <div class="p-0.5 text-white">
               <ArrowLeft class="w-5 h-5" />
             </div>
           </Button>
           <p class="text-slate-400">
             <span class="font-bold">
-              {{ 1 }}
+              {{ deck.total == 0 ? '-' : currentCardIndex + 1 }}
             </span>
-            / {{ query.total }}
+            / {{ deck.total == 0 ? '-' : deck.total }}
           </p>
 
-          <Button>
-            <div class="p-1 text-slate-300">
+          <Button :disabled="deck.cards.length == 0">
+            <div class="p-0.5 text-white">
               <ArrowRight class="w-5 h-5" />
             </div>
           </Button>
@@ -108,12 +113,12 @@
 
         <div class="flex items-center gap-2">
           <Button>
-            <div class="p-1 text-slate-300">
+            <div class="p-0.5 text-white">
               <Settings class="w-5 h-5" />
             </div>
           </Button>
           <Button>
-            <div class="p-1 text-slate-300">
+            <div class="p-0.5 text-white">
               <Fullscreen class="w-5 h-5" />
             </div>
           </Button>
@@ -124,39 +129,40 @@
       <div class="flex items-center gap-2 mt-4">
         <div class="flex items-center">
           <Avatar
-            v-for="contributor in query.contributors"
+            v-for="contributor in deck.contributors.slice(1)"
+            v-bind="contributor.avatar"
             :key="contributor.name"
-            class="w-6 h-6 bg-green-400/40 rounded-full opacity-80"
+            class="w-6 h-6 rounded-full opacity-80"
           />
         </div>
 
         <p class="text-slate-400 text-md">
           <span class="text-green-400 font-semibold">
-            {{ query.contributors.length }}
+            {{ deck.contributors.length - 1 }}
           </span>
           Contributors
         </p>
       </div>
 
       <div class="flex items-center text-slate-300 gap-1 mt-2">
-        <Avatar class="bg-green-400/80 rounded-full" />
+        <Avatar v-bind="deck.contributors[0].avatar" class="w-10 h-10" />
         <div class="-space-y-1">
           <div class="text-sm font-light">Created by</div>
           <div class="text-lg font-bold text-white">
-            {{ query.contributors[0].name }}
+            {{ deck.contributors[0].name }}
           </div>
         </div>
       </div>
     </div>
     <div class="mt-5">
       <!-- @vue-ignore -->
-      <CardTable :data="query.flashcards" />
+      <CardTable :data="deck.flashcards" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import Rating from 'primevue/rating';
 import {
   ArrowLeft,
@@ -164,6 +170,7 @@ import {
   Fullscreen,
   PenBox,
   Play,
+  Rabbit,
   Settings,
   Shuffle,
   User,
@@ -301,12 +308,29 @@ const query = reactive({
     },
   ],
 });
-interface Props {}
-defineProps<Props>();
 import Button from '@/components/Button.vue';
 import DifficultyLevel from '@/components/DifficultyLevel.vue';
 import Badge from '@/components/Badge.vue';
 import Card from '@/components/Card.vue';
-import Avatar from '@/components/Avatar.vue';
+import { Avatar } from 'vue3-avataaars';
 import CardTable from './partials/CardTable.vue';
+import { DeckDocument } from '@backend/decks/schemas/deck.schema';
+import { DecksService } from '@/services/DecksService';
+
+interface Props {
+  slug: string;
+}
+const props = defineProps<Props>();
+const currentCardIndex = ref(0);
+
+const deck = ref<DeckDocument | null>(null);
+onMounted(() => {
+  DecksService.getDeckBySlug(props.slug)
+    .then((res) => {
+      deck.value = res.data;
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+});
 </script>

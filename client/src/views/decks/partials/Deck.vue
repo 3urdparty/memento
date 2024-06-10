@@ -3,6 +3,7 @@
     <div class="group">
       <div class="relative h-40">
         <Button
+          @click="emits('delete', deck._id)"
           class="absolute bg-red-400 hover:bg-red-300 hover:border-red-600 rounded-md px-2 py-2 border-b-4 border-red-700 top-2 right-2 group transition"
         >
           <Trash
@@ -10,14 +11,17 @@
           />
         </Button>
         <div
-          class="flex items-center gap-2 w-full absolute bottom-0 left-0 mx-1"
+          class="flex items-center gap-2 w-full absolute bottom-0 left-0 mx-1 mb-1"
         >
           <Chip
-            class="bg-slate-400/80 text-green-400/80"
+            class="bg--400/80 text-green-400/80"
             v-for="tag in deck.tags"
             :key="tag"
           >
-            {{ tag.value }}
+            <HashIcon class="text-green-400 rounded-full w-4 h-4" />
+            <span class="text-sm">
+              {{ tag.value }}
+            </span>
           </Chip>
         </div>
         <img
@@ -108,21 +112,22 @@ import {
   Repeat,
   RectangleVertical,
   Spade,
-  Pencil,
   Trash,
+  HashIcon,
 } from 'lucide-vue-next';
 import DifficultyLevel from '@/components/DifficultyLevel.vue';
 import { RouterLink } from 'vue-router';
-import { Deck } from '@backend/decks/schemas/deck.schema';
-import { Avatar, Factory } from 'vue3-avataaars';
+import { DeckDocument } from '@backend/decks/schemas/deck.schema';
+import { Avatar } from 'vue3-avataaars';
 import Button from '@/components/Button.vue';
 import Chip from 'primevue/chip';
 
-const avatarProps = Factory({
-  isCircle: true,
-});
 interface Props {
-  deck: Deck;
+  deck: DeckDocument;
 }
+interface Emits {
+  (e: 'delete', id: string): boolean;
+}
+const emits = defineEmits<Emits>();
 defineProps<Props>();
 </script>

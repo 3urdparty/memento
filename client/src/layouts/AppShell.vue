@@ -1,11 +1,12 @@
 <template>
-  <div class="bg-slate-900">
+  <div class="bg-slate-900 h-screen">
     <div
       class="top-0 sticky z-20"
       :class="{
         '-translate-y-14 hover:translate-y-0 transition ease-in-out ': !open,
       }"
     >
+      <Toast />
       <CommandPalette v-model:open="palette.open" />
       <div class="bg-gradient-to-b from-slate-950 to-slate-900/0 pt-6 pb-4">
         <Disclosure as="nav" v-slot="{ open }">
@@ -63,26 +64,13 @@
                         currentRoute.fullPath === '/review',
                       'text-gray-300 hover:bg-slate-800 hover:text-white h-10':
                         currentRoute.fullPath !== '/review',
-                      'w-28 h-12':
-                        currentRoute.fullPath == '/review' && !!review,
                     }"
                     class="rounded-lg transition flex items-center justify-center h-10 w-10"
                     :aria-current="
                       currentRoute.fullPath == '/review/' ? 'page' : undefined
                     "
                   >
-                    <div class="flex items-center gap-2">
-                      <Target class="h-6 w-6" aria-hidden="true" />
-                      <Button
-                        @click="start"
-                        :class="{
-                          'w-13': currentRoute.fullPath == '/review',
-                        }"
-                        v-if="currentRoute.fullPath == '/review' && !!review"
-                      >
-                        Review
-                      </Button>
-                    </div>
+                    <Target class="h-6 w-6 text-gray-300" aria-hidden="true" />
                   </RouterLink>
                 </div>
               </div>
@@ -92,15 +80,15 @@
                   class="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center gap-2"
                 >
                   <!-- TODO: Add Locale Change Functionality-->
-                  <IconButton class="px-1.5 text-sm"> en </IconButton>
+                  <Button>
+                    <Languages class="h-5 w-5" aria-hidden="true" />
+                  </Button>
                   <!-- TODO: Add Theme Change Functionality -->
-                  <IconButton>
+                  <Button>
                     <Eclipse class="h-5 w-5" aria-hidden="true" />
-                  </IconButton>
+                  </Button>
                   <!-- TODO: Show Notifications Panel  -->
-                  <IconButton
-                    ><Bell class="h-5 w-5" aria-hidden="true"
-                  /></IconButton>
+                  <Button><Bell class="h-5 w-5" aria-hidden="true" /></Button>
 
                   <!-- Profile dropdown -->
                   <AvatarDropDown />
@@ -181,7 +169,7 @@ import Avatar from '@/components/Avatar.vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import Logo from '@/assets/Logo.svg?component';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import { WalletCards, Target, Bell, Eclipse } from 'lucide-vue-next';
+import { WalletCards, Target, Bell, Eclipse, Languages } from 'lucide-vue-next';
 import { onMounted, reactive, ref } from 'vue';
 import IconButton from '@/components/IconButton.vue';
 import AvatarDropDown from './AvatarDropDown.vue';
@@ -191,6 +179,7 @@ import CommandPalette from '@/components/CommandPalette.vue';
 import { onKeyStroke } from '@vueuse/core';
 import { useAuth } from '@/composables/auth';
 import { UserService } from '@/services/UserService';
+import Toast from 'primevue/toast';
 
 const open = ref(true);
 const currentRoute = useRoute();

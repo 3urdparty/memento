@@ -1,14 +1,15 @@
 import { instance } from "@/axios/instance"
 import { CreateDeckDto } from "@backend/decks/dto/create-deck.dto"
-import { UpdateDrawerDto } from "@backend/drawers/dto/update-drawer.dto";
+import { UpdateDeckDto } from "@backend/decks/dto/update-deck.dto";
 
 export const DecksService = {
-  updateDrawer: () => instance.get('/drawers'),
-  updateDeck: (drawer: UpdateDrawerDto) => instance.put(`/drawers/${drawer.slug}`, drawer),
-  createDrawer: (data: CreateDeckDto) => instance
+  getDeckBySlug: (slug: string) => instance.get(`/decks/${slug}`),
+  updateDeck: (deck: UpdateDeckDto) => instance.put(`/decks/${deck._id}`, deck),
+  createDeck: (data: CreateDeckDto) => instance
     .postForm('/decks', data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    })
+    }),
+  deleteDeck: (id: string) => instance.delete(`/decks/${id}`),
 }

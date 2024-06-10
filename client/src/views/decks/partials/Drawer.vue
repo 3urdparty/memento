@@ -53,7 +53,9 @@
 
     <ul class="grid grid-cols-4 mt-4 gap-4">
       <li v-for="deck in drawer.decks">
-        <Deck :deck="deck" />
+        <slot name="deck" :deck="deck">
+          <Deck :deck="deck" />
+        </slot>
       </li>
     </ul>
   </div>

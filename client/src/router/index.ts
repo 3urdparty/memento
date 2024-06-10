@@ -3,28 +3,34 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/Home.vue'
 import DeckIndexView from '@/views/decks/Index.vue'
 import DeckShowView from '@/views/decks/Show.vue'
+import { DecksService } from '@/services/DecksService'
 import ReviewView from '@/views/review/Index.vue'
 import Login from '@/views/auth/Login.vue'
 
 const routes = [
   {
     path: '/',
-    component: HomeView,
+    component: () => import('@/views/Home.vue'),
     meta: {
       title: 'Home Page',
     },
   },
   {
     path: '/decks',
-    component: DeckIndexView,
+    component: () => import('@/views/decks/Index.vue'),
     meta: {
       title: 'Decks',
     },
   },
-  { path: '/decks/:id', component: DeckShowView, meta: { title: 'Drawers' } },
+  {
+    path: '/decks/:slug',
+    component: DeckShowView,
+    meta: { title: 'Drawers' },
+    props: true
+  },
   {
     path: '/review',
-    component: ReviewView,
+    component: () => import('@/views/review/Index.vue'),
     meta: {
       title: 'Review',
       hideLayout: true,
@@ -32,8 +38,8 @@ const routes = [
   },
   {
     path: '/login',
+    components: () => import('@/views/auth/Login.vue'),
     meta: {
-
       hideLayout: true,
     },
     component: Login
@@ -41,7 +47,7 @@ const routes = [
 
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/',
+    component: () => import('@/views/404.vue'),
   }
 ]
 
