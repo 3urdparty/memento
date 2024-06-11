@@ -35,22 +35,19 @@
             <Button
               label="Export"
               @click="exportCSV($event)"
-              class="text-yellow-600 text-sm text-light"
+              class="text-sm"
+              severity="info"
+            >
+              <FileDown class="w-5 h-5" />
+            </Button>
+            <SplitButton
+              label="Export"
+              @click="exportCSV($event)"
               severity="warning"
             >
               <FileDown class="w-5 h-5" />
               Import
-            </Button>
-
-            <Button
-              label="Export"
-              @click="exportCSV($event)"
-              class="text-sm"
-              severity="info"
-            >
-              <FileUp class="w-5 h-5" />
-              Export
-            </Button>
+            </SplitButton>
 
             <Button @click="emit('create')" class="text-sm">
               <Plus class="w-5 h-5" />
@@ -89,6 +86,7 @@ import ColumnGroup from 'primevue/columngroup';
 import Button from '@/components/Button.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import { Club, FileDown, FileUp, Plus } from 'lucide-vue-next';
+import SplitButton from '@/components/SplitButton.vue';
 
 interface Props {
   data: FlashcardDocument[];

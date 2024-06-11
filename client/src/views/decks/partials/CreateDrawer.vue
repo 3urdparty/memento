@@ -41,7 +41,7 @@
   </Sidebar>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import {
   Angry,
   Annoyed,
@@ -79,7 +79,7 @@ const difficulties = [
   { name: 'Expert', value: 'expert', icon: Angry },
 ];
 
-const form = reactive<{ [key: string]: Field }>({
+const { form, values } = useForm({
   name: {
     type: 'text',
     icon: FolderPen,
@@ -129,13 +129,15 @@ const errors = ref<{ [key: string]: string }>({});
 import { useToast } from 'primevue/usetoast';
 import FormField from '@/components/FormField.vue';
 import Form from '@/components/Form.vue';
+import { useForm } from '@/composables/form';
+import { CreateDeckDto } from '@backend/decks/dto/create-deck.dto';
 
 const toast = useToast();
 const createDeck = () => {
   console.log('Creating deck', form);
   errors.value = {};
-  console.log(mapObject(form));
-  DecksService.createDeck(mapObject(form) as any)
+  console.log(form);
+  DecksService.createDeck(values())
     .then((response) => {
       open.value = false;
       emits('submit');

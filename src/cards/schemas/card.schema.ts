@@ -14,22 +14,19 @@ export class Card {
   @Prop({ required: true })
   question: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false, default: [] })
   tags: Tag[];
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   decks: Deck[];
 
-  @Prop({ required: true, enum: ['Multiple Choice', 'True/False', 'Fill in the Blank', 'Short Answer', 'Matching', 'Essay', 'Diagram', 'Card', 'Steps'] })
-  type: string;
+  @Prop({ required: false, default: "short-answer", enum: ["multiple-choice", "true-false", "fill-in-the-blank", "short-answer", "matching", "essay", "diagram", "card", "steps"] })
+  type: "multiple-choice" | "true-false" | "fill-in-the-blank" | "short-answer" | "matching" | "essay" | "diagram" | "card" | "steps";
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   level: string;
 
-  @Prop({ required: true })
-  callout: string;
-
-  @Prop({ required: true })
+  @Prop({ required: false })
   options: MultipleChoiceOption[];
 
   @Prop({ required: true })

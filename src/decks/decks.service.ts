@@ -32,6 +32,10 @@ export class DecksService {
     return await this.deckModel.findByIdAndUpdate(id, deck, { new: true });
   }
 
+  async addCard(deckId: string, cardId: string): Promise<Deck> {
+    return await this.deckModel.findByIdAndUpdate(deckId, { $push: { cards: cardId } }, { new: true });
+  }
+
   async delete(id: string): Promise<Deck> {
     return await this.deckModel.findByIdAndDelete(id);
   }

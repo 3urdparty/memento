@@ -7,14 +7,9 @@ import {
 
 export class CreateCardDto {
   @IsString()
-  @IsNotEmpty()
-  @MinLength(5)
   question: string;
 
   @IsString()
-  @IsNotEmpty()
-  @MinLength(5)
-  @MaxLength(300)
   answer: string;
 
 }

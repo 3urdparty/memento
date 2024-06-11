@@ -14,7 +14,7 @@
           class="flex items-center gap-2 w-full absolute bottom-0 left-0 mx-1 mb-1"
         >
           <Badge
-            class="bg-green-400/100 text-green-400/80"
+            class="bg-green-400/80 text-green-400/80"
             v-for="tag in deck.tags"
             :key="tag"
           >
