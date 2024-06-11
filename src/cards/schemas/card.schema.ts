@@ -3,13 +3,13 @@ import { Document } from 'mongoose';
 import { Factory } from 'nestjs-seeder';
 import { Deck } from 'src/decks/schemas/deck.schema';
 
-export type FlashcardDocument = Flashcard & Document;
+export type CardDocument = Card & Document;
 
 @Schema({
   timestamps: { createdAt: 'created', updatedAt: 'updated' },
 })
 
-export class Flashcard {
+export class Card {
   @Factory((faker) => faker.word.words(5))
   @Prop({ required: true })
   question: string;
@@ -20,7 +20,7 @@ export class Flashcard {
   @Prop({ required: true })
   decks: Deck[];
 
-  @Prop({ required: true, enum: ['Multiple Choice', 'True/False', 'Fill in the Blank', 'Short Answer', 'Matching', 'Essay', 'Diagram', 'Flashcard', 'Steps'] })
+  @Prop({ required: true, enum: ['Multiple Choice', 'True/False', 'Fill in the Blank', 'Short Answer', 'Matching', 'Essay', 'Diagram', 'Card', 'Steps'] })
   type: string;
 
   @Prop({ required: true })
@@ -48,7 +48,7 @@ export interface Tag {
 }
 
 
-export const FlashcardSchema = SchemaFactory.createForClass(Flashcard)
+export const CardSchema = SchemaFactory.createForClass(Card)
 
 
 

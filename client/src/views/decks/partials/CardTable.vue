@@ -32,9 +32,28 @@
             <!-- @vue-ignore -->
             <SearchBar placeholder="Search Cards" v-model="filters.global" />
 
-            <Button label="Export" @click="exportCSV($event)">
+            <Button
+              label="Export"
+              @click="exportCSV($event)"
+              class="text-yellow-600 text-sm text-light"
+              severity="warning"
+            >
+              <FileDown class="w-5 h-5" />
+              Import
+            </Button>
+
+            <Button
+              label="Export"
+              @click="exportCSV($event)"
+              class="text-sm"
+              severity="info"
+            >
               <FileUp class="w-5 h-5" />
               Export
+            </Button>
+
+            <Button @click="emit('create')" class="text-sm">
+              <Plus class="w-5 h-5" />
             </Button>
           </div>
         </template>
@@ -69,12 +88,15 @@ import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';
 import Button from '@/components/Button.vue';
 import SearchBar from '@/components/SearchBar.vue';
-import Card from '@/components/Card.vue';
-import { ArrowRight, Club, FileUp } from 'lucide-vue-next';
+import { Club, FileDown, FileUp, Plus } from 'lucide-vue-next';
 
 interface Props {
-  data: App.Models.Flashcard[];
+  data: FlashcardDocument[];
 }
+interface Emits {
+  (e: 'create'): void;
+}
+const emit = defineEmits<Emits>();
 
 defineProps<Props>();
 

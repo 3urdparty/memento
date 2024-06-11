@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <ul class="mt-4">
+    <ul class="mt-4" v-if="drawers">
       <TransitionGroup name="list" tag="ul">
         <li v-for="(_, idx) in drawers">
           <!-- Drawer Header  -->
@@ -35,8 +35,12 @@
       <!-- Drawer Section -->
     </ul>
     <div class="mt-10">
-      <Button @click="createDrawer" type="button">
-        <span class="text-green-600 text-sm"> Add Drawer </span>
+      <Button
+        @click="createDrawer"
+        type="button"
+        class="text-green-700 text-sm"
+      >
+        Add Drawer
       </Button>
     </div>
   </div>

@@ -2,8 +2,8 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
-import { Flashcard, Tag } from 'src/flashcards/schemas/flashcard.schema';
+import mongoose, { Types } from 'mongoose';
+import { Card, Tag } from 'src/cards/schemas/card.schema';
 import { User } from 'src/users/schemas/user.schema';
 import { Property } from '../entities/deck.entity';
 import { Factory } from 'nestjs-seeder';
@@ -79,7 +79,7 @@ export class Deck {
   suspended?: number;
 
   @Factory(faker => faker.number.int({ min: 0, max: 5 }))
-  @Prop({ required: true, min: 0, max: 5 })
+  @Prop({ required: false, default: 0, min: 0, max: 5 })
   rating: number;
 
   @Prop({ virtual: true, get: function() { return [] } })
@@ -107,7 +107,7 @@ export class Deck {
 
   @Factory(() => [])
   @Prop({ required: false })
-  cards: Flashcard[];
+  cards: Card[];
 
   @Prop({ type: [Types.ObjectId], ref: Drawer.name })
   drawers?: Drawer[];

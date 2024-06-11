@@ -1,5 +1,6 @@
 <template>
   <div v-if="deck">
+    <CreateDialog v-model:open="createDialogOpen" />
     <BreadCrumbs />
     <div class="relative">
       <div class="mt-2 md:flex md:items-center md:justify-between">
@@ -156,7 +157,7 @@
     </div>
     <div class="mt-5">
       <!-- @vue-ignore -->
-      <CardTable :data="deck.flashcards" />
+      <CardTable :data="deck.flashcards" @create="createDialogOpen = true" />
     </div>
   </div>
 </template>
@@ -316,6 +317,7 @@ import { Avatar } from 'vue3-avataaars';
 import CardTable from './partials/CardTable.vue';
 import { DeckDocument } from '@backend/decks/schemas/deck.schema';
 import { DecksService } from '@/services/DecksService';
+import CreateDialog from '../cards/partials/CreateDialog.vue';
 
 interface Props {
   slug: string;
@@ -333,4 +335,6 @@ onMounted(() => {
       console.log(e);
     });
 });
+
+const createDialogOpen = ref(false);
 </script>

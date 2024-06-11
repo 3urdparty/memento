@@ -1,7 +1,7 @@
 <template>
   <MultiSelect
     v-model="selected"
-    :options="options"
+    :options="users"
     filter
     :loading="loading"
     optionLabel="name"
@@ -34,30 +34,41 @@
   </MultiSelect>
 </template>
 <script setup lang="ts">
+import { UserService } from '@/services/UserService';
 import { User } from '@backend/users/schemas/user.schema';
 import { useVModel } from '@vueuse/core';
 import MultiSelect from 'primevue/multiselect';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { Avatar } from 'vue3-avataaars';
 interface Props {
-  options: App.Models.User[];
-  modelValue: App.Models.User[];
+  options: User[];
+  modelValue: User[];
   multiple?: boolean;
   loading: boolean;
 }
 
 interface Emits {
-  (e: 'update:modelValue', value: App.Models.User[]): void;
+  (e: 'update:modelValue', value: User[]): void;
 }
+
 const props = withDefaults(defineProps<Props>(), {
   options: () => [],
   multiple: () => false,
 });
+
 const emit = defineEmits<Emits>();
 const selected = ref<User[]>([]);
 watch(selected, (value) => {
   //@ts-ignore
   modelValue.value = value.map((v) => v._id);
 });
+
 const modelValue = useVModel(props, 'modelValue', emit);
+const users = ref<User[]>([]);
+
+onMounted(() => {
+  UserService.getUsers().then((res) => {
+    users.value = res.data;
+  });
+});
 </script>

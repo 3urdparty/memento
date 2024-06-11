@@ -2,8 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, Types } from 'mongoose';
 import { Factory } from 'nestjs-seeder';
 import { Deck } from 'src/decks/schemas/deck.schema';
-import { Tag } from 'src/flashcards/schemas/flashcard.schema';
-import { DrawersService } from '../drawers.service';
+import { Tag } from 'src/cards/entities/card.entity';
 
 
 export type DrawerDocument = Drawer & Document;

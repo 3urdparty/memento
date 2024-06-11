@@ -1,10 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Req, RawBodyRequest } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { DrawersService } from './drawers.service';
 import { Drawer } from './schema/drawer.schema';
-import mongoose from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateDrawerDto } from './dto/update-drawer.dto';
-import { CreateDeckDto } from 'src/decks/dto/create-deck.dto';
 import { CreateDrawerDto } from './dto/create-drawer.dto';
 
 @ApiTags('drawers')

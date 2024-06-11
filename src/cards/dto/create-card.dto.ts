@@ -5,7 +5,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateFlashcardDto {
+export class CreateCardDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(5)

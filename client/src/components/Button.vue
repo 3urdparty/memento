@@ -1,6 +1,6 @@
 <template>
   <button
-    class="flex items-center gap-2 border-b-4 rounded-md px-2.5 py-2 transition group"
+    class="flex items-center gap-2 border-b-4 rounded-md px-2.5 py-2 transition group cursor-pointer"
     :class="{
       'bg-gray-400  border-gray-600 cursor-not-allowed': disabled,
       'bg-green-400 hover:bg-green-300 hover:text-green-700 border-green-600':

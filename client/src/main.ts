@@ -10,6 +10,7 @@ import VueKatex from '@hsorby/vue3-katex'
 import Lara from '@/presets/lara'
 import 'katex/dist/katex.min.css'
 import Tooltip from 'primevue/tooltip'
+import BadgeDirective from 'primevue/badgedirective'
 
 const app = createApp(App)
 app.use(VueKatex, {
@@ -23,6 +24,7 @@ app.use(PrimeVue, {
 
 app.use(ToastService)
 app.directive('tooltip', Tooltip);
+app.directive('badge', BadgeDirective);
 
 app.use(router)
 

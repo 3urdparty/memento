@@ -51,7 +51,7 @@
       </p>
     </div>
 
-    <ul class="grid grid-cols-4 mt-4 gap-4">
+    <ul class="grid grid-cols-4 mt-4 gap-4" v-if="drawer.decks">
       <li v-for="deck in drawer.decks">
         <slot name="deck" :deck="deck">
           <Deck :deck="deck" />

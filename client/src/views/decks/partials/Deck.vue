@@ -13,8 +13,8 @@
         <div
           class="flex items-center gap-2 w-full absolute bottom-0 left-0 mx-1 mb-1"
         >
-          <Chip
-            class="bg--400/80 text-green-400/80"
+          <Badge
+            class="bg-green-400/100 text-green-400/80"
             v-for="tag in deck.tags"
             :key="tag"
           >
@@ -22,7 +22,7 @@
             <span class="text-sm">
               {{ tag.value }}
             </span>
-          </Chip>
+          </Badge>
         </div>
         <img
           :src="deck.coverUrl"
@@ -121,6 +121,7 @@ import { DeckDocument } from '@backend/decks/schemas/deck.schema';
 import { Avatar } from 'vue3-avataaars';
 import Button from '@/components/Button.vue';
 import Chip from 'primevue/chip';
+import Badge from '@/components/Badge.vue';
 
 interface Props {
   deck: DeckDocument;

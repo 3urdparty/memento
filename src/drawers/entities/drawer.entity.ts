@@ -1,5 +1,5 @@
 import { Deck } from "src/decks/schemas/deck.schema";
-import { Tag } from "src/flashcards/schemas/flashcard.schema";
+import { Tag } from "src/cards/schemas/card.schema";
 
 export interface Drawer {
   icon: string;

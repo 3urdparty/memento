@@ -1,12 +1,12 @@
 <template>
   <div class="bg-slate-900 h-screen">
+    <Toast />
     <div
       class="top-0 sticky z-20"
       :class="{
         '-translate-y-14 hover:translate-y-0 transition ease-in-out ': !open,
       }"
     >
-      <Toast />
       <CommandPalette v-model:open="palette.open" />
       <div class="bg-gradient-to-b from-slate-950 to-slate-900/0 pt-6 pb-4">
         <Disclosure as="nav" v-slot="{ open }">
@@ -36,7 +36,7 @@
                   <Logo class="w-8 text-green-300/90" />
                 </div>
                 <div
-                  class="hidden md:ml-6 md:flex md:items-center md:space-x-4"
+                  class="hidden md:ml-6 md:flex md:items-center md:space-x-2"
                 >
                   <RouterLink
                     :to="item.href"
@@ -46,7 +46,7 @@
                       currentRoute.fullPath === item.href
                         ? 'bg-gray-900 text-white'
                         : 'text-gray-300 hover:bg-slate-800 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium',
+                      'rounded-lg transition flex items-center justify-center h-10 w-14',
                     ]"
                     :aria-current="
                       currentRoute.fullPath == item.href ? 'page' : undefined
@@ -65,7 +65,7 @@
                       'text-gray-300 hover:bg-slate-800 hover:text-white h-10':
                         currentRoute.fullPath !== '/review',
                     }"
-                    class="rounded-lg transition flex items-center justify-center h-10 w-10"
+                    class="rounded-lg transition flex items-center justify-center h-10 w-14"
                     :aria-current="
                       currentRoute.fullPath == '/review/' ? 'page' : undefined
                     "
@@ -80,15 +80,24 @@
                   class="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center gap-2"
                 >
                   <!-- TODO: Add Locale Change Functionality-->
-                  <Button>
+                  <button
+                    class="rounded-lg transition flex items-center justify-center w-14 text-gray-300 hover:bg-slate-800 hover:text-white h-10"
+                  >
                     <Languages class="h-5 w-5" aria-hidden="true" />
-                  </Button>
+                  </button>
                   <!-- TODO: Add Theme Change Functionality -->
-                  <Button>
+                  <button
+                    class="rounded-lg transition flex items-center justify-center w-14 text-gray-300 hover:bg-slate-800 hover:text-white h-10"
+                  >
                     <Eclipse class="h-5 w-5" aria-hidden="true" />
-                  </Button>
+                  </button>
                   <!-- TODO: Show Notifications Panel  -->
-                  <Button><Bell class="h-5 w-5" aria-hidden="true" /></Button>
+                  <button
+                    class="rounded-lg transition flex items-center justify-center w-14 text-gray-300 hover:bg-slate-800 hover:text-white h-10"
+                  >
+                    <Bell class="h-5 w-5" aria-hidden="true" />
+                    <Badge :value="10" />
+                  </button>
 
                   <!-- Profile dropdown -->
                   <AvatarDropDown />
@@ -180,6 +189,7 @@ import { onKeyStroke } from '@vueuse/core';
 import { useAuth } from '@/composables/auth';
 import { UserService } from '@/services/UserService';
 import Toast from 'primevue/toast';
+import Badge from 'primevue/badge';
 
 const open = ref(true);
 const currentRoute = useRoute();

@@ -1,6 +1,6 @@
 import { Deck } from "src/decks/schemas/deck.schema";
 
-export interface Flashcard {
+export interface Card {
   number: number;
   question: string;
   tags?: Tag[];
@@ -13,7 +13,7 @@ export interface Flashcard {
   | 'Matching'
   | 'Essay'
   | 'Diagram'
-  | 'Flashcard'
+  | 'Card'
   | 'Steps';
   level?: string;
   callout?: string;
