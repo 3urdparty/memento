@@ -19,11 +19,12 @@
           <div>
             <label for="email-address" class="sr-only">Email address</label>
 
+            {{ form }}
             <FloatLabel>
               <InputText
                 autocomplete="email"
                 required
-                v-model="form.email"
+                v-model="form.username"
                 class="w-full focus:z-10 relative"
               />
               <label for="username">Email</label>
@@ -98,7 +99,7 @@ import Logo from '@/assets/Logo.svg?component';
 import { reactive } from 'vue';
 import { AuthService } from '@/services/AuthService';
 const form = reactive({
-  email: '',
+  username: '',
   password: '',
   checked: false,
 });

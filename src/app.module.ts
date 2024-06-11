@@ -12,6 +12,7 @@ import { DrawersModule } from './drawers/drawers.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { join } from 'path';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [

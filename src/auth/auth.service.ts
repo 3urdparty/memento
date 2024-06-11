@@ -1,15 +1,12 @@
-import { Injectable, Dependencies } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User } from 'src/users/schemas/user.schema';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-@Dependencies(UsersService)
 export class AuthService {
-  constructor(private readonly usersService: UsersService,
-    private jwtService: JwtService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService) { }
 
   async validateUser(username: string, pass: string) {
     const user = await this.usersService.findByEmail(username);
@@ -20,8 +17,9 @@ export class AuthService {
     return null;
   }
 
-  async authenticate(email: string, password: string) {
-    const payload = { email, password }
+  async login(user: any) {
+    console.log('user,', user)
+    const payload = { username: user.email, sub: user._id }
     return {
       access_token: this.jwtService.sign(payload)
     }

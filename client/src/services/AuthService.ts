@@ -1,7 +1,6 @@
 import { instance } from "@/axios/instance"
-import { CreateDeckDto } from "@backend/decks/dto/create-deck.dto"
-import { UpdateDeckDto } from "@backend/decks/dto/update-deck.dto";
+import { LoginDto } from "@backend/auth/dto/login.dto"
 
 export const AuthService = {
-  login: (data: { email: string, password: string }) => instance.post('/auth/login', data),
+  login: (data: LoginDto) => instance.post('/auth/login', data),
 }
