@@ -19,11 +19,11 @@ export class User {
   @Prop({ default: false })
   verified: boolean;
 
-  @Factory(faker => faker.internet.password())
+  @Factory((faker, ctx) => ctx.email ?? faker.internet.email())
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Factory(faker => faker.image.url())
+  @Factory((faker) => faker.image.url())
   @Prop({ required: false })
   imageUrl?: string;
 
@@ -31,7 +31,7 @@ export class User {
   @Prop({ required: false })
   email_verified_at?: string;
 
-  @Factory(faker => faker.internet.password())
+  @Factory((faker, ctx) => ctx.password ?? faker.internet.password())
   @Prop({ required: true })
   password: string;
 

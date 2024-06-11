@@ -4,39 +4,41 @@
   >
     <div class="w-full max-w-sm space-y-10">
       <div>
-        <img
-          class="mx-auto h-10 w-auto"
-          src="https://tailwindui.com/img/logos/mark.svg?color=green&shade=600"
-          alt="Your Company"
-        />
+        <div class="flex items-center justify-center">
+          <Logo class="w-10 h-10 text-green-400" />
+        </div>
         <h2
-          class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"
+          class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight dark:text-slate-400"
         >
           Sign in to your account
         </h2>
       </div>
-      <form class="space-y-6" action="#" method="POST">
-        <div class="relative -space-y-px rounded-md shadow-sm">
-          <div
-            class="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300"
-          />
+      <div class="space-y-6">
+        <div class="relative space-y-3 rounded-md shadow-sm">
+          <div class="pointer-events-none absolute inset-0 z-10 rounded-md" />
           <div>
             <label for="email-address" class="sr-only">Email address</label>
-            <InputText
-              autocomplete="email"
-              required
-              class="w-full rounded-b-none focus:z-10 relative"
-            />
+
+            <FloatLabel>
+              <InputText
+                autocomplete="email"
+                required
+                v-model="form.email"
+                class="w-full focus:z-10 relative"
+              />
+              <label for="username">Email</label>
+            </FloatLabel>
           </div>
           <div>
-            <label for="password" class="sr-only">Password</label>
             <FloatLabel>
               <Password
                 v-model="form.password"
                 toggleMask
-                class="w-full border-t-none"
+                required
+                :feedback="false"
+                class="w-full"
               />
-              <label for="username">Password</label>
+              <label for="password">Password</label>
             </FloatLabel>
           </div>
         </div>
@@ -58,7 +60,7 @@
           <div class="text-sm leading-6">
             <a
               href="#"
-              class="font-semibold text-green-600 hover:text-green-500"
+              class="font-semibold text-green-400/90 hover:text-green-500"
               >Forgot password?</a
             >
           </div>
@@ -66,13 +68,13 @@
 
         <div>
           <Button
-            type="submit"
+            @click="login"
             class="w-full bg-green-400 border-green-600 hover:bg-green-300 text-center flex items-center justify-center text-md text-green-700"
           >
             Sign in
           </Button>
         </div>
-      </form>
+      </div>
 
       <p class="text-center text-sm leading-6 text-gray-400">
         Not a member?
@@ -92,10 +94,21 @@ import Checkbox from 'primevue/checkbox';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
+import Logo from '@/assets/Logo.svg?component';
 import { reactive } from 'vue';
+import { AuthService } from '@/services/AuthService';
 const form = reactive({
   email: '',
   password: '',
   checked: false,
 });
+const login = () => {
+  AuthService.login(form)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 </script>

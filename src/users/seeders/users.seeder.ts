@@ -12,8 +12,11 @@ export class UsersSeeder implements Seeder {
   async seed(): Promise<any> {
     // Generate 10 users.
     const users = DataFactory.createForClass(User).generate(10);
-
-
+    const defaultUser = DataFactory.createForClass(User).generate(1, {
+      email: 'mustafa.y.elagib@gmail.com',
+      password: 'Password123+'
+    })
+    users.push(defaultUser[0]);
     return this.user.insertMany(users);
   }
 

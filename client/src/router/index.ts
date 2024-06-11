@@ -1,11 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import HomeView from '@/views/Home.vue'
-import DeckIndexView from '@/views/decks/Index.vue'
-import DeckShowView from '@/views/decks/Show.vue'
-import { DecksService } from '@/services/DecksService'
-import ReviewView from '@/views/review/Index.vue'
-import Login from '@/views/auth/Login.vue'
 
 const routes = [
   {
@@ -24,25 +18,20 @@ const routes = [
   },
   {
     path: '/decks/:slug',
-    component: DeckShowView,
+    component: () => import('@/views/decks/Show.vue'),
     meta: { title: 'Drawers' },
     props: true
   },
   {
     path: '/review',
     component: () => import('@/views/review/Index.vue'),
-    meta: {
-      title: 'Review',
-      hideLayout: true,
-    },
   },
   {
     path: '/login',
-    components: () => import('@/views/auth/Login.vue'),
+    component: () => import('@/views/auth/Login.vue'),
     meta: {
       hideLayout: true,
     },
-    component: Login
   },
 
   {

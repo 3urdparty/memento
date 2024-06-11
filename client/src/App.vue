@@ -2,14 +2,13 @@
 import { RouterView, useRoute } from 'vue-router';
 
 import AppShell from './layouts/AppShell.vue';
-const { meta } = useRoute();
+const route = useRoute();
 </script>
 
 <template>
-  <AppShell v-if="!meta.hideLayout">
-    <template #main>
-      <RouterView />
-    </template>
+  <AppShell :showNavbar="!route.meta.hideLayout">
+    <RouterView v-slot="{ Component }">
+      <component :is="Component" />
+    </RouterView>
   </AppShell>
-  <RouterView v-else />
 </template>

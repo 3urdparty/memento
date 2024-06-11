@@ -8,7 +8,10 @@
       }"
     >
       <CommandPalette v-model:open="palette.open" />
-      <div class="bg-gradient-to-b from-slate-950 to-slate-900/0 pt-6 pb-4">
+      <div
+        class="bg-gradient-to-b from-slate-950 to-slate-900/0 pt-6 pb-4"
+        v-if="showNavbar"
+      >
         <Disclosure as="nav" v-slot="{ open }">
           <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 justify-between">
@@ -165,7 +168,7 @@
     <div>
       <main class="text-slate-400">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <slot name="main" />
+          <slot />
         </div>
       </main>
     </div>
@@ -191,6 +194,12 @@ import { UserService } from '@/services/UserService';
 import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
 
+interface Props {
+  showNavbar: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+  showNavbar: true,
+});
 const open = ref(true);
 const currentRoute = useRoute();
 
