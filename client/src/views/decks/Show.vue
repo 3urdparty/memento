@@ -109,11 +109,14 @@
               <ArrowLeft class="w-5 h-5" />
             </div>
           </Button>
-          <p class="text-slate-400">
+          <p class="text-slate-400" v-if="deck.total == 0">
+            <span class="font-bold"> -/- </span>
+          </p>
+          <p class="text-slate-400" v-else>
             <span class="font-bold">
-              {{ deck.total == 0 ? '-' : currentCardIndex + 1 }}
+              {{ currentCardIndex + 1 }}
             </span>
-            / {{ deck.total == 0 ? '-' : deck.total }}
+            / {{ deck.total }}
           </p>
 
           <Button
@@ -264,9 +267,10 @@ const op = ref();
 const toast = useToast();
 
 const confirm = useConfirm();
-const confirmDelete = () => {
+const confirmDelete = (cards: CardDocument[]) => {
+  if (cards.length === 0) return;
   confirm.require({
-    message: 'Do you want to delete this record?',
+    message: `Do you want to delete ${cards.length} card(s)?`,
     header: 'Danger Zone',
     icon: 'pi pi-info-circle',
     rejectLabel: 'Cancel',
@@ -274,12 +278,7 @@ const confirmDelete = () => {
     rejectClass: 'p-button-secondary p-button-outlined',
     acceptClass: 'p-button-danger',
     accept: () => {
-      toast.add({
-        severity: 'info',
-        summary: 'Confirmed',
-        detail: 'Record deleted',
-        life: 3000,
-      });
+      deleteCards(cards);
     },
     reject: () => {
       toast.add({
@@ -299,6 +298,12 @@ const deleteCards = (cards: CardDocument[]) => {
       deck.value.cards = deck.value.cards.filter(
         (c) => !cards.map((c) => c._id).includes(c._id),
       );
+      toast.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Cards have been deleted',
+        life: 3000,
+      });
     })
     .catch((e) => {
       console.error(e);

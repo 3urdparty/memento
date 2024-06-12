@@ -1,5 +1,5 @@
 <template>
-  <ul class="space-y-3">
+  <ul class="space-y-3 pb-6">
     <li v-for="(property, name) in form">
       <FormField
         v-bind="property"

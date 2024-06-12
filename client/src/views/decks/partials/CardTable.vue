@@ -52,6 +52,7 @@
 
             <Button
               @click="emit('delete', selectedCards)"
+              :disabled="selectedCards.length == 0"
               class="text-sm"
               severity="error"
             >

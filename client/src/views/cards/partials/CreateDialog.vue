@@ -7,6 +7,8 @@
     :style="{ width: '25rem' }"
   >
     <Form v-model="form" />
+
+    <InputOptions v-model="options" />
     <Button @click="() => emit('create', values())">
       <Plus class="w-5 h-5" />
       Create
@@ -14,15 +16,17 @@
   </Dialog>
 </template>
 <script setup lang="ts">
+import Checkbox from 'primevue/checkbox';
 import Button from '@/components/Button.vue';
 import Form from '@/components/Form.vue';
 import { useForm } from '@/composables/form';
-import { DeckDocument } from '@backend/decks/schemas/deck.schema';
 import { useVModel } from '@vueuse/core';
 import { FolderPen, Plus } from 'lucide-vue-next';
 import Dialog from 'primevue/dialog';
-import { DecksService } from '@/services/DecksService';
 import { CreateCardDto } from '@backend/cards/dto/create-card.dto';
+import InputOptions from '@/components/InputOptions.vue';
+import { reactive } from 'vue';
+const options = reactive([]);
 
 const { form, values } = useForm({
   type: {

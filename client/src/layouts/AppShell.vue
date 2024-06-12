@@ -1,6 +1,8 @@
 <template>
   <div class="bg-slate-900 h-full max-h-2xl">
     <Toast />
+
+    <ConfirmDialog></ConfirmDialog>
     <div
       class="top-0 sticky z-20"
       :class="{
@@ -196,6 +198,7 @@ import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
 import { User } from '@backend/users/schemas/user.schema';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import ConfirmDialog from 'primevue/confirmdialog';
 
 interface Props {
   showNavbar: boolean;

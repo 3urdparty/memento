@@ -1,7 +1,7 @@
 import { Field } from "@backend/decks/schemas/deck.schema";
 import { reactive } from "vue"
 
-export const useForm = (initialValues: any) => {
+export const useForm = (initialValues: { [key: string]: Field }) => {
   const form = reactive(initialValues)
   const values = () => {
     let result: { [key: string]: string | File | string[] } = {};
