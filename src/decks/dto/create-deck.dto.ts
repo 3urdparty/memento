@@ -11,9 +11,6 @@ export class CreateDeckDto {
   @IsIn(["easy", "medium", "hard", "very hard", "expert"])
   difficulty: "easy" | "medium" | "hard" | "very hard" | "expert";
 
-
-
-
   coverUrl: string;
 
   properties: mongoose.Schema.Types.ObjectId[];

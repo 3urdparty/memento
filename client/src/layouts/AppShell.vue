@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-slate-900 h-screen">
+  <div class="bg-slate-900 h-full max-h-2xl">
     <Toast />
     <div
       class="top-0 sticky z-20"
@@ -36,7 +36,11 @@
                   </DisclosureButton>
                 </div>
                 <div class="flex flex-shrink-0 items-center">
-                  <Logo class="w-8 text-green-300/90" />
+                  <RouterLink to="/" class="group">
+                    <Logo
+                      class="w-8 text-green-300/80 group-hover:text-green-300 transition"
+                    />
+                  </RouterLink>
                 </div>
                 <div
                   class="hidden md:ml-6 md:flex md:items-center md:space-x-2"
@@ -99,11 +103,12 @@
                     class="rounded-lg transition flex items-center justify-center w-14 text-gray-300 hover:bg-slate-800 hover:text-white h-10"
                   >
                     <Bell class="h-5 w-5" aria-hidden="true" />
-                    <Badge :value="10" />
+                    <Badge v-if="user" :value="user?.notifications.length" />
                   </button>
 
                   <!-- Profile dropdown -->
-                  <AvatarDropDown />
+                  <div class="text-white"></div>
+                  <AvatarDropDown :avatar="user?.avatar" />
                 </div>
               </div>
             </div>
@@ -131,7 +136,7 @@
             <div class="border-t border-gray-700 pb-3 pt-4">
               <div class="flex items-center px-5 sm:px-6">
                 <div class="flex-shrink-0">
-                  <Avatar showStatus />
+                  <AvatarDropDown showStatus v-bind="user?.avatar" />
                 </div>
                 <div class="ml-3">
                   <div class="text-base font-medium text-white">
@@ -168,6 +173,7 @@
     <div>
       <main class="text-slate-400">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <BreadCrumbs />
           <slot />
         </div>
       </main>
@@ -177,52 +183,37 @@
 
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
-import Avatar from '@/components/Avatar.vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import Logo from '@/assets/Logo.svg?component';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { WalletCards, Target, Bell, Eclipse, Languages } from 'lucide-vue-next';
-import { onMounted, reactive, ref } from 'vue';
-import IconButton from '@/components/IconButton.vue';
+import { reactive, ref } from 'vue';
 import AvatarDropDown from './AvatarDropDown.vue';
 import Button from '@/components/Button.vue';
-import { useReview } from '@/stores/review';
 import CommandPalette from '@/components/CommandPalette.vue';
 import { onKeyStroke } from '@vueuse/core';
-import { useAuth } from '@/composables/auth';
-import { UserService } from '@/services/UserService';
 import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
+import { User } from '@backend/users/schemas/user.schema';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 interface Props {
   showNavbar: boolean;
+  user: User | null;
 }
 const props = withDefaults(defineProps<Props>(), {
   showNavbar: true,
+  user: null,
 });
 const open = ref(true);
 const currentRoute = useRoute();
 
 const navigation = [{ name: 'Decks', href: '/decks', icon: WalletCards }];
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
-];
-const { start, review } = useReview();
 
 const palette = reactive({ open: false });
 
-const { user } = useAuth();
 onKeyStroke(['cmd', 'k'], (e) => {
   e.preventDefault();
   palette.open = !palette.open;
-});
-const users = ref([]);
-
-onMounted(() => {
-  UserService.getUsers().then((response) => {
-    users.value = response.data[0];
-  });
 });
 </script>

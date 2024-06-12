@@ -37,4 +37,8 @@ export class CardsService {
   async remove(id: number) {
     return this.cardModel.findByIdAndDelete(id);
   }
+
+  async removeMany(ids: string[]) {
+    return this.cardModel.deleteMany({ _id: { $in: ids } });
+  }
 }

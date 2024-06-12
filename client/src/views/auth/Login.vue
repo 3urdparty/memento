@@ -19,7 +19,6 @@
           <div>
             <label for="email-address" class="sr-only">Email address</label>
 
-            {{ form }}
             <FloatLabel>
               <InputText
                 autocomplete="email"
@@ -69,7 +68,7 @@
 
         <div>
           <Button
-            @click="login"
+            @click="authenticate"
             class="w-full bg-green-400 border-green-600 hover:bg-green-300 text-center flex items-center justify-center text-md text-green-700"
           >
             Sign in
@@ -98,18 +97,38 @@ import Password from 'primevue/password';
 import Logo from '@/assets/Logo.svg?component';
 import { reactive } from 'vue';
 import { AuthService } from '@/services/AuthService';
+import { useAuth } from '@/composables/auth';
+import { useRouter } from 'vue-router';
+import { useToast } from 'primevue/usetoast';
 const form = reactive({
-  username: '',
-  password: '',
+  username: 'mustafa.y.elagib@gmail.com',
+  password: 'Password123+',
   checked: false,
 });
-const login = () => {
+const { setUser, user } = useAuth();
+const router = useRouter();
+const toast = useToast();
+const authenticate = () => {
   AuthService.login(form)
     .then((response) => {
-      console.log(response);
+      console.log(response.data.user);
+      setUser(response.data.user);
+      router.push('/');
+      toast.add({
+        severity: 'success',
+        summary: 'Login Success',
+        detail: 'Welcome back, ' + response.data.user.name,
+        life: 3000,
+      });
     })
     .catch((error) => {
       console.log(error);
+      toast.add({
+        severity: 'error',
+        summary: 'Login Error',
+        detail: 'Invalid credentials',
+        life: 3000,
+      });
     });
 };
 </script>

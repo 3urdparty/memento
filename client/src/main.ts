@@ -11,6 +11,7 @@ import Lara from '@/presets/lara'
 import 'katex/dist/katex.min.css'
 import Tooltip from 'primevue/tooltip'
 import BadgeDirective from 'primevue/badgedirective'
+import ConfirmationService from 'primevue/confirmationservice';
 
 const app = createApp(App)
 app.use(VueKatex, {
@@ -28,4 +29,6 @@ app.directive('badge', BadgeDirective);
 
 app.use(router)
 
+
+app.use(ConfirmationService);
 app.mount('#app')

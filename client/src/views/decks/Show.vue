@@ -1,7 +1,10 @@
 <template>
-  <div v-if="deck">
-    <CreateDialog v-model:open="createDialogOpen" />
-    <BreadCrumbs />
+  <div v-if="deck" class="pb-14">
+    <CreateDialog
+      v-model:open="createDialogOpen"
+      :deck="deck"
+      @create="createCard"
+    />
     <div class="relative">
       <div class="mt-2 md:flex md:items-center md:justify-between">
         <div class="min-w-0 flex-1 flex items-center gap-3">
@@ -71,11 +74,16 @@
       <Card class="bg-slate-700">
         <div
           class="h-80 w-full p-8 border border-slate-600 rounded-lg flex items-center justify-center"
-          v-if="deck.cards.length == 0"
         >
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2" v-if="deck.cards.length == 0">
             <Rabbit class="w-8 h-8" />
             <span class="mt-2.5"> No cards in this deck </span>
+          </div>
+
+          <div v-else>
+            <p class="text-white text-2xl">
+              {{ deck.cards[currentCardIndex].question }}
+            </p>
           </div>
         </div>
       </Card>
@@ -93,7 +101,10 @@
           </Button>
         </div>
         <div class="flex items-center gap-3">
-          <Button :disabled="deck.cards.length == 0">
+          <Button
+            :disabled="deck.cards.length == 0"
+            @click="currentCardIndex >= 1 && currentCardIndex--"
+          >
             <div class="p-0.5 text-white">
               <ArrowLeft class="w-5 h-5" />
             </div>
@@ -105,7 +116,12 @@
             / {{ deck.total == 0 ? '-' : deck.total }}
           </p>
 
-          <Button :disabled="deck.cards.length == 0">
+          <Button
+            :disabled="deck.cards.length == 0"
+            @click="
+              currentCardIndex < deck.cards.length - 1 && currentCardIndex++
+            "
+          >
             <div class="p-0.5 text-white">
               <ArrowRight class="w-5 h-5" />
             </div>
@@ -113,7 +129,15 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <Button>
+          <OverlayPanel ref="op">
+            <ul>
+              <li class="flex items-center gap-2">
+                Enable
+                <InputSwitch :modelValue="true" />
+              </li>
+            </ul>
+          </OverlayPanel>
+          <Button @click="toggle">
             <div class="p-0.5 text-white">
               <Settings class="w-5 h-5" />
             </div>
@@ -157,12 +181,15 @@
     </div>
     <div class="mt-5">
       <!-- @vue-ignore -->
-      <CardTable :data="deck.flashcards" @create="createDialogOpen = true" />
+      <CardTable
+        :data="deck.cards"
+        @create="createDialogOpen = true"
+        @delete="confirmDelete"
+      />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import { onMounted, reactive, ref } from 'vue';
 import Rating from 'primevue/rating';
 import {
@@ -177,138 +204,6 @@ import {
   User,
 } from 'lucide-vue-next';
 
-const query = reactive({
-  id: 1,
-  difficulty: 'easy',
-  imageUrl: '/src/assets/images/computational_methods.jpg',
-  total: 10,
-  new: 5,
-  due: 3,
-  leech: 2,
-  suspended: 0,
-  rating: 4.5,
-  recentStudents: 31,
-  properties: [
-    {
-      key: 'Chapter',
-      type: 'number',
-      value: 1,
-    },
-    {
-      key: 'Code',
-      type: 'text',
-      value: 'CM-101',
-    },
-  ],
-  contributors: [
-    {
-      name: 'John Doe',
-      imageUrl:
-        'https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      email: 'john.doe@gmail.com',
-    },
-    {
-      name: 'John Doe',
-      imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      email: 'john.doe@gmail.com',
-    },
-    {
-      name: 'John Doe',
-      imageUrl:
-        'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      email: 'john.doe@gmail.com',
-    },
-    {
-      name: 'John Doe',
-      imageUrl:
-        'https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      email: 'john.doe@gmail.com',
-    },
-  ],
-  coverUrl: 'https://source.unsplash.com/random/900x700/?maths',
-  name: 'Significance and Error',
-  description:
-    "A deck for chapter 3 of the course of Computational methods. This deck contains cards about numerical integration, including techniques like the trapezoidal rule, Simpson's rule, and Romberg algorithm, along with implementation in Octave",
-  tags: [
-    {
-      name: 'Mathematics',
-      color: 'green',
-      icon: 'Maths',
-    },
-    {
-      name: 'University',
-      color: 'blue',
-      icon: 'University',
-    },
-  ],
-  flashcards: [
-    {
-      number: 1,
-      question: 'What is the capital of France?',
-      tags: [
-        {
-          name: 'Trivia',
-          color: 'purple',
-        },
-      ],
-      decks: [],
-      type: 'Multiple Choice',
-      level: 'Easy',
-      callout: 'New Card',
-      options: [
-        {
-          value: 'Paris',
-          isCorrect: true,
-          imgPath: 'https://source.unsplash.com/random/900x700/?paris',
-        },
-        {
-          value: 'London',
-          isCorrect: false,
-          imgPath: 'https://source.unsplash.com/random/900x700/?london',
-        },
-        {
-          value: 'Berlin',
-          isCorrect: false,
-          imgPath: 'https://source.unsplash.com/random/900x700/?berlin',
-        },
-        {
-          value: 'Madrid',
-          isCorrect: false,
-          imgPath: 'https://source.unsplash.com/random/900x700/?madrid',
-        },
-      ],
-    },
-    {
-      number: 2,
-      question: 'Calculate $\\int{x^2}dx$',
-      tags: [
-        {
-          name: 'Mathematics',
-          color: 'green',
-        },
-      ],
-      decks: [],
-      type: 'Steps',
-      level: 'Easy',
-      callout: 'New Card',
-    },
-    {
-      number: 3,
-      question: 'What is the quadratic formula',
-      tags: [
-        {
-          name: 'Mathematics',
-          color: 'green',
-        },
-      ],
-      decks: [],
-      type: 'Multiple Choice',
-      level: 'Easy',
-      callout: 'New Card',
-    },
-  ],
-});
 import Button from '@/components/Button.vue';
 import DifficultyLevel from '@/components/DifficultyLevel.vue';
 import Badge from '@/components/Badge.vue';
@@ -318,6 +213,13 @@ import CardTable from './partials/CardTable.vue';
 import { DeckDocument } from '@backend/decks/schemas/deck.schema';
 import { DecksService } from '@/services/DecksService';
 import CreateDialog from '../cards/partials/CreateDialog.vue';
+import { CreateCardDto } from '@backend/cards/dto/create-card.dto';
+import { useToast } from 'primevue/usetoast';
+import { useConfirm } from 'primevue/useconfirm';
+import OverlayPanel from 'primevue/overlaypanel';
+import InputSwitch from 'primevue/inputswitch';
+import { CardDocument } from '@backend/cards/schemas/card.schema';
+import { CardsService } from '@/services/CardsService';
 
 interface Props {
   slug: string;
@@ -337,4 +239,69 @@ onMounted(() => {
 });
 
 const createDialogOpen = ref(false);
+
+const createCard = (newCard: CreateCardDto) => {
+  if (!deck.value) return;
+  console.log('Creating Card', newCard);
+  console.log(deck.value._id);
+  DecksService.createCard(deck.value._id, newCard)
+    .then(({ data }) => {
+      createDialogOpen.value = false;
+      if (!deck.value) return;
+      deck.value.cards.push(data);
+    })
+    .catch((e) => {
+      console.error(e);
+    });
+};
+
+const toggle = (event: Event) => {
+  op.value.toggle(event);
+};
+
+const op = ref();
+
+const toast = useToast();
+
+const confirm = useConfirm();
+const confirmDelete = () => {
+  confirm.require({
+    message: 'Do you want to delete this record?',
+    header: 'Danger Zone',
+    icon: 'pi pi-info-circle',
+    rejectLabel: 'Cancel',
+    acceptLabel: 'Delete',
+    rejectClass: 'p-button-secondary p-button-outlined',
+    acceptClass: 'p-button-danger',
+    accept: () => {
+      toast.add({
+        severity: 'info',
+        summary: 'Confirmed',
+        detail: 'Record deleted',
+        life: 3000,
+      });
+    },
+    reject: () => {
+      toast.add({
+        severity: 'error',
+        summary: 'Rejected',
+        detail: 'You have rejected',
+        life: 3000,
+      });
+    },
+  });
+};
+const deleteCards = (cards: CardDocument[]) => {
+  console.log('Deleting Cards', cards);
+  CardsService.deleteCards(cards.map((c) => c._id))
+    .then(() => {
+      if (!deck.value) return;
+      deck.value.cards = deck.value.cards.filter(
+        (c) => !cards.map((c) => c._id).includes(c._id),
+      );
+    })
+    .catch((e) => {
+      console.error(e);
+    });
+};
 </script>

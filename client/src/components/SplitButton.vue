@@ -1,7 +1,7 @@
 <template>
   <div class="inline-flex rounded-md shadow-sm">
     <Button class="rounded-r-none text-sm">
-      <FileUp class="w-5 h-5" />
+      <slot> Button </slot>
     </Button>
     <Menu as="div" class="relative -ml-px block">
       <MenuButton>
@@ -44,14 +44,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import Button from './Button.vue';
 import { ChevronDown, FileUp } from 'lucide-vue-next';
 
-const items = [
-  { name: 'Save and schedule', href: '#' },
-  { name: 'Save and publish', href: '#' },
-  { name: 'Export PDF', href: '#' },
-];
+interface Props {
+  label: string;
+  items: { name: string; href: string }[];
+}
+const props = withDefaults(defineProps<Props>(), {
+  label: 'Button',
+  items: [],
+});
 </script>

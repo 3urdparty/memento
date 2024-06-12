@@ -127,16 +127,13 @@ const { form, values } = useForm({
 const errors = ref<{ [key: string]: string }>({});
 
 import { useToast } from 'primevue/usetoast';
-import FormField from '@/components/FormField.vue';
 import Form from '@/components/Form.vue';
 import { useForm } from '@/composables/form';
-import { CreateDeckDto } from '@backend/decks/dto/create-deck.dto';
 
 const toast = useToast();
 const createDeck = () => {
   console.log('Creating deck', form);
   errors.value = {};
-  console.log(form);
   DecksService.createDeck(values())
     .then((response) => {
       open.value = false;
@@ -152,14 +149,6 @@ const createDeck = () => {
       console.log(error);
       errors.value = error.response.data;
     });
-};
-
-const mapObject = (obj: { [key: string]: Field }) => {
-  let result: { [key: string]: string | File | string[] } = {};
-  for (const key in obj) {
-    result[key] = obj[key].value;
-  }
-  return result;
 };
 
 const editMode = ref(true);

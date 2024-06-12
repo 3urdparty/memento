@@ -106,7 +106,7 @@ export class Deck {
   tags: Tag[];
 
   @Factory(() => [])
-  @Prop({ required: false })
+  @Prop({ required: false, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Card' }] })
   cards: Card[];
 
   @Prop({ type: [Types.ObjectId], ref: Drawer.name })

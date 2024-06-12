@@ -44,11 +44,19 @@
               label="Export"
               @click="exportCSV($event)"
               severity="warning"
+              :items="items"
             >
               <FileDown class="w-5 h-5" />
               Import
             </SplitButton>
 
+            <Button
+              @click="emit('delete', selectedCards)"
+              class="text-sm"
+              severity="error"
+            >
+              <Trash class="w-5 h-5" />
+            </Button>
             <Button @click="emit('create')" class="text-sm">
               <Plus class="w-5 h-5" />
             </Button>
@@ -56,10 +64,10 @@
         </template>
 
         <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-        <Column field="question" header="Code"></Column>
-        <Column field="name" header="Name"></Column>
-        <Column field="category" header="Category"></Column>
-        <Column field="quantity" header="Quantity"></Column>
+        <Column field="question" header="Question"></Column>
+        <Column field="answer" header="Answer"></Column>
+        <Column field="type" header="Type"></Column>
+        <Column field="tags" header="Tags"></Column>
         <ColumnGroup type="footer">
           <Row>
             <Column
@@ -85,14 +93,16 @@ import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';
 import Button from '@/components/Button.vue';
 import SearchBar from '@/components/SearchBar.vue';
-import { Club, FileDown, FileUp, Plus } from 'lucide-vue-next';
+import { Club, FileDown, FileUp, Plus, Trash } from 'lucide-vue-next';
 import SplitButton from '@/components/SplitButton.vue';
+import { CardDocument } from '@backend/cards/schemas/card.schema';
 
 interface Props {
-  data: FlashcardDocument[];
+  data: CardDocument[];
 }
 interface Emits {
   (e: 'create'): void;
+  (e: 'delete', cards: CardDocument[]): void;
 }
 const emit = defineEmits<Emits>();
 
@@ -137,4 +147,10 @@ const onRowContextMenu = (event: DataTableRowContextMenuEvent) => {
 };
 const selectedCards = ref([]);
 const selectedCard = ref<App.Models.Flashcard | null>(null);
+
+const items = [
+  { name: 'Save and schedule', href: '#' },
+  { name: 'Save and publish', href: '#' },
+  { name: 'Export PDF', href: '#' },
+];
 </script>

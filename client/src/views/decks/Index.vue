@@ -2,7 +2,6 @@
   <div>
     <CreateDrawer v-model:open="open" @submit="fetchDrawers" />
     <div>
-      <BreadCrumbs />
       <div class="mt-2 md:flex md:items-center md:justify-between">
         <div class="min-w-0 flex-1">
           <h2

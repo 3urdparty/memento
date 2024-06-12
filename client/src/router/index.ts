@@ -1,3 +1,4 @@
+import { useAuth } from '@/composables/auth';
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -27,6 +28,7 @@ const routes = [
     component: () => import('@/views/review/Index.vue'),
   },
   {
+    name: 'Login',
     path: '/login',
     component: () => import('@/views/auth/Login.vue'),
     meta: {
@@ -45,4 +47,20 @@ const router = createRouter({
   routes,
 })
 
+const { isAuthenticated } = useAuth();
+
+
+router.beforeEach((to, from, next) => {
+  console.log(!isAuthenticated.value && to.name !== 'Login')
+  if (
+    // make sure the user is authenticated
+    !isAuthenticated.value &&
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'Login'
+  ) {
+    // redirect the user to the login page
+    return next({ name: 'Login' });
+  } else
+    return next();
+})
 export default router

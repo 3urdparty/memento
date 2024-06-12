@@ -3,6 +3,7 @@ import { CardsService } from './cards.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { DeleteCardsDto } from './dto/delete-cards.dto';
 
 @ApiTags('cards')
 @Controller('cards')
@@ -32,5 +33,10 @@ export class CardsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.cardsService.remove(+id);
+  }
+
+  @Delete()
+  removeMany(@Body() body: DeleteCardsDto) {
+    return this.cardsService.removeMany(body.cards);
   }
 }

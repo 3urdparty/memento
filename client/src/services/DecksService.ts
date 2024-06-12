@@ -1,4 +1,5 @@
 import { instance } from "@/axios/instance"
+import { CreateCardDto } from "@backend/cards/dto/create-card.dto";
 import { CreateDeckDto } from "@backend/decks/dto/create-deck.dto"
 import { UpdateDeckDto } from "@backend/decks/dto/update-deck.dto";
 
@@ -12,4 +13,5 @@ export const DecksService = {
       },
     }),
   deleteDeck: (id: string) => instance.delete(`/decks/${id}`),
+  createCard: (deckId: string, card: CreateCardDto) => instance.post(`/decks/${deckId}/cards`, card),
 }

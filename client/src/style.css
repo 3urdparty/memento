@@ -28,7 +28,9 @@
 @tailwind utilities;
 
 @media (prefers-color-scheme: dark) {
+  html {
+  }
   body {
-    @apply bg-slate-950;
+    @apply bg-slate-900;
   }
 }

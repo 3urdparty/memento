@@ -11,5 +11,6 @@ export const CardsService = {
         'Content-Type': 'multipart/form-data',
       },
     }),
-  deleteDeck: (id: string) => instance.delete(`/decks/${id}`),
+  deleteCard: (id: string) => instance.delete(`/cards/${id}`),
+  deleteCards: (cards: string[]) => instance.delete(`/cards`, { data: { cards } }),
 }
