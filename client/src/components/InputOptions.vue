@@ -1,20 +1,43 @@
 <template>
   <div>
     <InputText :modelValue="currentValue" class="w-full" @keydown="handleKey" />
-    <ul class="grid grid-cols-2 gap-2 py-2">
-      <li
-        v-for="(option, idx) in modelValue"
-        :key="option.key"
-        class="flex align-items-center w-full border border-slate-600 rounded-md py-2 px-2 flex gap-2"
-      >
-        <Checkbox
-          v-model="modelValue[idx].correct"
-          :inputId="option.key"
-          name="category"
-          :value="option.name"
-        />
-        <label :for="option.key">{{ option.name }}</label>
-      </li>
+    <ul
+      class="grid gap-2 py-2"
+      :class="{
+        'grid-cols-1': modelValue.length < 2,
+        'grid-cols-2': modelValue.length >= 2 && modelValue.length <= 4,
+        'grid-cols-3': modelValue.length > 4,
+      }"
+    >
+      <TransitionGroup>
+        <li
+          v-for="(option, idx) in modelValue"
+          :key="option.key"
+          class="flex align-items-center w-full border border-slate-600 rounded-md py-2 px-2 gap-2 justify-between"
+        >
+          <div class="flex items-center gap-2">
+            <Checkbox
+              v-model="modelValue[idx].correct"
+              :inputId="option.key"
+              name="category"
+              :value="option.name"
+            />
+
+            <input
+              type="text"
+              v-model="modelValue[idx].name"
+              class="bg-transparent border-0 focus:ring-0"
+            />
+          </div>
+          <Button
+            severity="error"
+            class="!p-1 !px-1.5"
+            @click="modelValue.splice(idx, 1)"
+          >
+            <Trash class="w-5" />
+          </Button>
+        </li>
+      </TransitionGroup>
     </ul>
   </div>
 </template>
@@ -25,11 +48,14 @@ export type Option = {
   key: string;
   name: string;
   correct: boolean;
+  explanation?: string;
 };
 
 import { useVModel } from '@vueuse/core';
 import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
+import { Trash } from 'lucide-vue-next';
+import Button from './Button.vue';
 
 interface Props {
   modelValue: O[];

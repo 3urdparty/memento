@@ -1,16 +1,25 @@
 <template>
   <ul class="space-y-3 pb-6">
     <li v-for="(property, name) in form">
-      <FormField
-        v-bind="property"
-        v-model="form[name].value"
-        :error="errors[name]"
-        :name="property.name ?? name"
-      />
-      <span class="text-red-400 text-sm">
-        {{ errors[name] }}
-      </span>
+      <div
+        v-if="
+          typeof property.show === 'function'
+            ? property.show(form)
+            : property.show !== false
+        "
+      >
+        <FormField
+          v-bind="property"
+          v-model="form[name].value"
+          :error="errors[name]"
+          :name="property.name ?? name"
+        />
+        <span class="text-red-400 text-sm">
+          {{ errors[name] }}
+        </span>
+      </div>
     </li>
+    <slot name="end" :form="modelValue" />
   </ul>
 </template>
 <script setup lang="ts">

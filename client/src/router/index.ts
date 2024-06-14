@@ -30,8 +30,10 @@ const routes = [
   {
     name: 'Login',
     path: '/login',
+
     component: () => import('@/views/auth/Login.vue'),
     meta: {
+      hideBreadcrumbs: true,
       hideLayout: true,
     },
   },

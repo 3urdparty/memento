@@ -1,6 +1,7 @@
 <template>
   <div>
     <label
+      v-if="showLabel"
       for="difficulty"
       class="mb-2 text-sm font-medium text-slate-900 dark:text-white flex items-center capitalize justify-between"
     >
@@ -15,7 +16,7 @@
 
         <button class="text-slate-500 hover:text-slate-400" type="button">
           <component
-            v-if="icon"
+            v-if="icon && showIcon"
             :is="icon"
             :class="{
               'text-red-400': !!error,
@@ -50,16 +51,22 @@
       </button>
     </label>
 
+    <component
+      :is="component"
+      v-if="component"
+      v-model="modelValue"
+      :invalid="!!error"
+    />
     <InputText
       v-model="modelValue"
       class="w-full"
       :invalid="!!error"
-      v-if="type == 'text'"
+      v-else-if="type == 'text'"
     />
     <DropDown
       v-model="modelValue"
       class="w-full"
-      v-if="type == 'select'"
+      v-else-if="type == 'select'"
       :options="options as Option[]"
       :invalid="!!error"
       dataKey="value"
@@ -70,7 +77,7 @@
 
     <FileUpload
       :multiple="false"
-      v-if="type == 'file'"
+      v-else-if="type == 'file'"
       class="border-b-2 w-fit overflow-clip"
       mode="basic"
       name="demo"
@@ -86,7 +93,7 @@
       :invalid="!!error"
       :loading="false"
       v-model="modelValue"
-      v-if="type == 'users'"
+      v-else-if="type == 'users'"
     />
 
     <Textarea
@@ -95,11 +102,11 @@
       cols="30"
       :invalid="!!error"
       v-model="modelValue"
-      v-if="type == 'longtext'"
+      v-else-if="type == 'longtext'"
     />
 
     <MultiSelect
-      v-if="type == 'multiselect'"
+      v-else-if="type == 'multiselect'"
       v-model="modelValue"
       :invalid="!!error"
       class="w-full"
@@ -116,12 +123,19 @@
     </MultiSelect>
 
     <Rating
-      v-if="type == 'rating'"
+      v-else-if="type == 'rating'"
       v-model="modelValue"
       class="w-full"
       :cancel="false"
       :readonly="false"
     />
+    <div class="flex items-center gap-2" v-else-if="type == 'checkbox'">
+      <Checkbox v-model="modelValue" binary />
+      <span class="capitalize">
+        {{ name }}
+      </span>
+    </div>
+    <InputOptions v-if="type == 'inputoptions'" v-model="modelValue" />
   </div>
 </template>
 <script setup lang="ts">
@@ -134,6 +148,9 @@ import Textarea from 'primevue/textarea';
 import MultiSelect from 'primevue/multiselect';
 import { useVModel } from '@vueuse/core';
 import { ref } from 'vue';
+import InputOptions from './InputOptions.vue';
+import AnswerEditor from './AnswerEditor.vue';
+import Checkbox from 'primevue/checkbox';
 
 interface Props {
   type:
@@ -150,7 +167,8 @@ interface Props {
     | 'checkbox'
     | 'select'
     | 'users'
-    | 'rating';
+    | 'rating'
+    | 'inputoptions';
   icon?: any;
   value?: any;
   name?: string;
@@ -163,8 +181,16 @@ interface Props {
   options?: { name: string; value: string; icon?: any }[];
   modelValue: any;
   error: string;
+  exclude?: boolean;
+  component: any;
+  showLabel?: boolean;
+  users?: any[];
+  showIcon?: boolean;
 }
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showLabel: true,
+  showIcon: true,
+});
 interface Emits {
   (e: 'update:modelValue', value: any): void;
 }

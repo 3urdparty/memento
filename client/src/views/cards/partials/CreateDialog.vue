@@ -6,9 +6,8 @@
     header="Create Card"
     :style="{ width: '25rem' }"
   >
-    <Form v-model="form" />
+    <Form v-model="form"> </Form>
 
-    <InputOptions v-model="options" />
     <Button @click="() => emit('create', values())">
       <Plus class="w-5 h-5" />
       Create
@@ -21,56 +20,62 @@ import Button from '@/components/Button.vue';
 import Form from '@/components/Form.vue';
 import { useForm } from '@/composables/form';
 import { useVModel } from '@vueuse/core';
-import { FolderPen, Plus } from 'lucide-vue-next';
+import { FolderPen, Plus, Shuffle } from 'lucide-vue-next';
 import Dialog from 'primevue/dialog';
 import { CreateCardDto } from '@backend/cards/dto/create-card.dto';
 import InputOptions from '@/components/InputOptions.vue';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
+import AnswerEditor from '@/components/AnswerEditor.vue';
 const options = reactive([]);
 
+const answer = reactive({
+  text: '',
+});
+
+const question_types = [
+  {
+    name: 'Multiple Choice',
+    value: 'multiple-choice',
+  },
+  {
+    name: 'True/False',
+    value: 'true-false',
+  },
+  {
+    name: 'Fill in the Blank',
+    value: 'fill-in-the-blank',
+  },
+  {
+    name: 'Short Answer',
+    value: 'short-answer',
+  },
+  {
+    name: 'Matching',
+    value: 'matching',
+  },
+  {
+    name: 'Essay',
+    value: 'essay',
+  },
+  {
+    name: 'Diagram',
+    value: 'diagram',
+  },
+  {
+    name: 'Card',
+    value: 'card',
+  },
+  {
+    name: 'Steps',
+    value: 'steps',
+  },
+];
 const { form, values } = useForm({
   type: {
     type: 'select',
-    options: [
-      {
-        name: 'Multiple Choice',
-        value: 'multiple-choice',
-      },
-      {
-        name: 'True/False',
-        value: 'true-false',
-      },
-      {
-        name: 'Fill in the Blank',
-        value: 'fill-in-the-blank',
-      },
-      {
-        name: 'Short Answer',
-        value: 'short-answer',
-      },
-      {
-        name: 'Matching',
-        value: 'matching',
-      },
-      {
-        name: 'Essay',
-        value: 'essay',
-      },
-      {
-        name: 'Diagram',
-        value: 'diagram',
-      },
-      {
-        name: 'Card',
-        value: 'card',
-      },
-      {
-        name: 'Steps',
-        value: 'steps',
-      },
-    ],
+    options: question_types,
     icon: FolderPen,
-    value: null,
+    value: question_types[0].value,
     required: true,
     removable: false,
     placeholder: 'Name',
@@ -86,12 +91,28 @@ const { form, values } = useForm({
     removable: false,
     placeholder: 'Name',
   },
-  answer: {
-    type: 'text',
+  options: {
+    type: 'inputoptions',
+    show: (form) => form['type'].value === 'multiple-choice',
     icon: FolderPen,
-    value: null,
+    value: [],
+    required: true,
+    placeholder: 'Options',
+  },
+  fill_in_the_blank: {
+    component: AnswerEditor,
+    name: 'answer',
+    value: { text: '' },
     required: true,
     placeholder: 'Answer',
+  },
+  shuffle: {
+    showLabel: false,
+    name: 'shuffle',
+    value: false,
+    type: 'checkbox',
+    icon: Shuffle,
+    show: (form) => form['type'].value === 'multiple-choice',
   },
 });
 interface Props {

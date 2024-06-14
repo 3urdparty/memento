@@ -241,7 +241,7 @@ onMounted(() => {
     });
 });
 
-const createDialogOpen = ref(false);
+const createDialogOpen = ref(true);
 
 const createCard = (newCard: CreateCardDto) => {
   if (!deck.value) return;

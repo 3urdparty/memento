@@ -28,7 +28,7 @@
           leave-to="opacity-0 scale-95"
         >
           <DialogPanel
-            class="mx-auto max-w-3xl transform divide-y divide-slate-500 divide-opacity-20 overflow-hidden rounded-xl bg-slate-900 border border-l-4 border-b-4 border-green-400/80 shadow-2xl transition-all"
+            class="mx-auto max-w-3xl transform divide-y divide-slate-500 divide-opacity-20 overflow-hidden rounded-xl bg-slate-900 border-b-[5px] pb-4 border-green-400/80 shadow-2xl transition-all"
           >
             <Combobox @update:modelValue="onSelect">
               <div class="relative">

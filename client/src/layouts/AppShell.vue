@@ -175,7 +175,6 @@
     <div>
       <main class="text-slate-400">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <BreadCrumbs />
           <slot />
         </div>
       </main>
@@ -189,11 +188,11 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import Logo from '@/assets/Logo.svg?component';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { WalletCards, Target, Bell, Eclipse, Languages } from 'lucide-vue-next';
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import AvatarDropDown from './AvatarDropDown.vue';
 import Button from '@/components/Button.vue';
 import CommandPalette from '@/components/CommandPalette.vue';
-import { onKeyStroke } from '@vueuse/core';
+import { onKeyStroke, useMagicKeys } from '@vueuse/core';
 import Toast from 'primevue/toast';
 import Badge from 'primevue/badge';
 import { User } from '@backend/users/schemas/user.schema';
@@ -215,8 +214,12 @@ const navigation = [{ name: 'Decks', href: '/decks', icon: WalletCards }];
 
 const palette = reactive({ open: false });
 
-onKeyStroke(['cmd', 'k'], (e) => {
-  e.preventDefault();
-  palette.open = !palette.open;
+const keys = useMagicKeys();
+const shiftCtrlA = keys['Meta+k'];
+
+watch(shiftCtrlA, (v) => {
+  if (v) {
+    palette.open = !palette.open;
+  }
 });
 </script>
