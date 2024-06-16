@@ -15,7 +15,6 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import Checkbox from 'primevue/checkbox';
 import Button from '@/components/Button.vue';
 import Form from '@/components/Form.vue';
 import { useForm } from '@/composables/form';
@@ -23,9 +22,9 @@ import { useVModel } from '@vueuse/core';
 import { FolderPen, Plus, Shuffle } from 'lucide-vue-next';
 import Dialog from 'primevue/dialog';
 import { CreateCardDto } from '@backend/cards/dto/create-card.dto';
-import InputOptions from '@/components/InputOptions.vue';
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import AnswerEditor from '@/components/AnswerEditor.vue';
+import { ProsemirrorAdapterProvider } from '@prosemirror-adapter/vue';
 const options = reactive([]);
 
 const answer = reactive({
@@ -98,13 +97,6 @@ const { form, values } = useForm({
     value: [],
     required: true,
     placeholder: 'Options',
-  },
-  fill_in_the_blank: {
-    component: AnswerEditor,
-    name: 'answer',
-    value: { text: '' },
-    required: true,
-    placeholder: 'Answer',
   },
   shuffle: {
     showLabel: false,

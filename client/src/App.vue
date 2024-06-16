@@ -5,6 +5,7 @@ import AppShell from './layouts/AppShell.vue';
 const route = useRoute();
 import { useAuth } from '@/composables/auth';
 import BreadCrumbs from './components/BreadCrumbs.vue';
+import { useFavicon } from '@vueuse/core';
 const { user } = useAuth();
 </script>
 

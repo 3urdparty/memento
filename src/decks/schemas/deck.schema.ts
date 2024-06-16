@@ -29,7 +29,7 @@ export class Field {
     | 'file'
     | 'checkbox'
     | 'select'
-    | 'users' | 'rating';
+    | 'users' | 'rating' | 'inputoptions';
   icon?: any;
   value?: any;
   name?: string;
@@ -40,6 +40,12 @@ export class Field {
   editable?: boolean;
   default?: string;
   options?: { name: string; value: string; icon?: any }[];
+  exclude?: boolean;
+  show?: boolean | ((form: { [key: string]: Field }) => boolean);
+  component?: any;
+  showLabel: boolean;
+  showIcon: boolean;
+  message?: string;
 };
 @Schema({
   timestamps: { createdAt: 'created', updatedAt: 'updated' },

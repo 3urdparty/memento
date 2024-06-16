@@ -1,0 +1,27 @@
+<template>
+  <div>
+    <div v-html="text"></div>
+  </div>
+  <!-- <div ref="content" class="flex items-center"> -->
+  <!--   <div v-for="(component, idx) in modelValue.components"> -->
+  <!--     <input -->
+  <!--       :key="idx" -->
+  <!--       :ref="refs.set" -->
+  <!--       :value="component.text" -->
+  <!--       @keypress="(e) => handleInput(e, component.id as number, idx)" -->
+  <!--       class="border-0 border-slate-500 bg-transparent focus:ring-0 focus:border-green-400 p-0 transition text-start text-clip" -->
+  <!--       :style="{ -->
+  <!--         width: `${Math.ceil(getTextWidth(component.text, '16px Karla')) + 15 ?? 2}px`, -->
+  <!--       }" -->
+  <!--     /> -->
+  <!--   </div> -->
+  <!-- </div> -->
+</template>
+<script setup lang="ts">
+import { useTextDimensions } from '@/composables/text';
+import { useTemplateRefsList } from '@vueuse/core';
+import Editor from 'primevue/editor';
+import { computed, reactive, ref } from 'vue';
+
+const text = ref('<div>Paris is the capital of France</div>');
+</script>

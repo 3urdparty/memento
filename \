@@ -27,6 +27,10 @@
         </div>
       </div>
     </div>
+    <ProsemirrorAdapterProvider>
+      <YourAwesomeEditor />
+    </ProsemirrorAdapterProvider>
+    <
     <div
       class="text-slate-400 flex items-center gap-2 divide-x divide-slate-300/40 mt-1"
     >
@@ -50,9 +54,6 @@
       <span> </span>
     </div>
 
-    <div class="p-10">
-      <FillInTheBlanksAnswerEditor />
-    </div>
     <p class="text-slate-400 mt-2">
       {{ deck.description }}
     </p>
@@ -226,8 +227,6 @@ import InputSwitch from 'primevue/inputswitch';
 import { CardDocument } from '@backend/cards/schemas/card.schema';
 import { CardsService } from '@/services/CardsService';
 import { ProsemirrorAdapterProvider } from '@prosemirror-adapter/vue';
-import AnswerEditor from '@/components/AnswerEditor.vue';
-import FillInTheBlanksAnswerEditor from '@/components/FillInTheBlanksAnswerEditor.vue';
 
 interface Props {
   slug: string;
@@ -246,7 +245,7 @@ onMounted(() => {
     });
 });
 
-const createDialogOpen = ref(false);
+const createDialogOpen = ref(true);
 
 const createCard = (newCard: CreateCardDto) => {
   if (!deck.value) return;
