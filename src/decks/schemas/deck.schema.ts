@@ -16,7 +16,7 @@ export type DeckDocument = Deck & { _id: string };
 
 
 export class Field {
-  type:
+  type?:
     | 'text'
     | 'longtext'
     | 'number'
@@ -29,7 +29,11 @@ export class Field {
     | 'file'
     | 'checkbox'
     | 'select'
-    | 'users' | 'rating' | 'inputoptions';
+    | 'users'
+    | 'rating'
+    | 'inputoptions'
+    | 'markdown';
+
   icon?: any;
   value?: any;
   name?: string;
@@ -43,8 +47,8 @@ export class Field {
   exclude?: boolean;
   show?: boolean | ((form: { [key: string]: Field }) => boolean);
   component?: any;
-  showLabel: boolean;
-  showIcon: boolean;
+  showLabel?: boolean;
+  showIcon?: boolean;
   message?: string;
 };
 @Schema({
