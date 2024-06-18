@@ -2,7 +2,11 @@
   <!-- TODO: Proper CSS classes when a card is disabled -->
   <BaseCard :flashcard="flashcard">
     <ul
-      class="grid grid-cols-4 gap-6 mt-4"
+      class="grid gap-6 mt-4"
+      :class="{
+        'grid-cols-4': maximised,
+        'grid-cols-1': !maximised,
+      }"
       v-if="flashcard.type == 'Multiple Choice'"
     >
       <li v-for="(option, idx) in flashcard.options">
@@ -60,6 +64,7 @@ import { ref } from 'vue';
 interface Props {
   flashcard: App.Models.Flashcard;
   disabled: boolean;
+  maximised: boolean;
 }
 interface Emits {
   (e: 'answer', correct: boolean, option: string): void;

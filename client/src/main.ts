@@ -18,10 +18,12 @@ app.use(VueKatex, {
   globalOptions: {}
 })
 
+
 app.use(PrimeVue, {
   unstyled: true,
   pt: Lara
 });
+
 
 app.use(ToastService)
 app.directive('tooltip', Tooltip);

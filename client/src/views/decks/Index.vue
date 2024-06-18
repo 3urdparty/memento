@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
-import { Drawer } from '../../../../src/drawers/schema/drawer.schema';
+import { Drawer } from '@backend/drawers/schema/drawer.schema';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import CreateDrawer from './partials/CreateDrawer.vue';

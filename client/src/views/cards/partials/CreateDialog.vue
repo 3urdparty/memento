@@ -22,14 +22,9 @@ import { useVModel } from '@vueuse/core';
 import { FolderPen, Plus, Shuffle } from 'lucide-vue-next';
 import Dialog from 'primevue/dialog';
 import { CreateCardDto } from '@backend/cards/dto/create-card.dto';
-import { reactive } from 'vue';
-import AnswerEditor from '@/components/AnswerEditor.vue';
-import { ProsemirrorAdapterProvider } from '@prosemirror-adapter/vue';
-const options = reactive([]);
-
-const answer = reactive({
-  text: '',
-});
+import ClozeEdit from '@/components/ClozeEdit.vue';
+import { Deck, Field } from '@backend/decks/schemas/deck.schema';
+import { Card } from '@backend/cards/schemas/card.schema';
 
 const question_types = [
   {
@@ -74,7 +69,7 @@ const { form, values } = useForm({
     type: 'select',
     options: question_types,
     icon: FolderPen,
-    value: question_types[0].value,
+    value: question_types[2].value,
     required: true,
     removable: false,
     placeholder: 'Name',
@@ -89,6 +84,8 @@ const { form, values } = useForm({
     required: true,
     removable: false,
     placeholder: 'Name',
+    show: (form) =>
+      !(['fill-in-the-blank'] as Card['type'][]).includes(form['type'].value),
   },
   options: {
     type: 'inputoptions',
@@ -97,6 +94,9 @@ const { form, values } = useForm({
     value: [],
     required: true,
     placeholder: 'Options',
+    props: {
+      maximized: true,
+    },
   },
   shuffle: {
     showLabel: false,
@@ -105,6 +105,16 @@ const { form, values } = useForm({
     type: 'checkbox',
     icon: Shuffle,
     show: (form) => form['type'].value === 'multiple-choice',
+  },
+  fill_in_the_blanks: {
+    name: 'Answer',
+    component: ClozeEdit,
+    show: (form) => form['type'].value === 'fill-in-the-blank',
+  },
+  short_answer: {
+    name: 'Answer',
+    component: 'markdown',
+    show: (form) => form['type'].value === 'short-answer',
   },
 });
 interface Props {

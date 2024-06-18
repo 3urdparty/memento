@@ -50,9 +50,6 @@
       <span> </span>
     </div>
 
-    <div class="p-10">
-      <FillInTheBlanksAnswerEditor />
-    </div>
     <p class="text-slate-400 mt-2">
       {{ deck.description }}
     </p>
@@ -225,9 +222,7 @@ import OverlayPanel from 'primevue/overlaypanel';
 import InputSwitch from 'primevue/inputswitch';
 import { CardDocument } from '@backend/cards/schemas/card.schema';
 import { CardsService } from '@/services/CardsService';
-import { ProsemirrorAdapterProvider } from '@prosemirror-adapter/vue';
-import AnswerEditor from '@/components/AnswerEditor.vue';
-import FillInTheBlanksAnswerEditor from '@/components/FillInTheBlanksAnswerEditor.vue';
+import MarkdownEditor from '@/components/MarkdownEditor.vue';
 
 interface Props {
   slug: string;
@@ -235,6 +230,7 @@ interface Props {
 const props = defineProps<Props>();
 const currentCardIndex = ref(0);
 
+const md = ref('Test');
 const deck = ref<DeckDocument | null>(null);
 onMounted(() => {
   DecksService.getDeckBySlug(props.slug)

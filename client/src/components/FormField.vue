@@ -129,6 +129,7 @@
       :cancel="false"
       :readonly="false"
     />
+    <MarkdownEditor v-else-if="type == 'markdown'" v-model="modelValue" />
     <div class="flex items-center gap-2" v-else-if="type == 'checkbox'">
       <Checkbox v-model="modelValue" binary />
       <span class="capitalize">
@@ -149,7 +150,7 @@ import MultiSelect from 'primevue/multiselect';
 import { useVModel } from '@vueuse/core';
 import { ref } from 'vue';
 import InputOptions from './InputOptions.vue';
-import AnswerEditor from './AnswerEditor.vue';
+import MarkdownEditor from '@/components/MarkdownEditor.vue';
 import Checkbox from 'primevue/checkbox';
 
 interface Props {
@@ -168,7 +169,8 @@ interface Props {
     | 'select'
     | 'users'
     | 'rating'
-    | 'inputoptions';
+    | 'inputoptions'
+    | 'markdown';
   icon?: any;
   value?: any;
   name?: string;

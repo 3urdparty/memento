@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-slate-900 h-full max-h-2xl">
+  <div class="bg-slate-900 h-full max-h-2xl selection:bg-green-400">
     <Toast />
 
     <ConfirmDialog></ConfirmDialog>
     <div
-      class="top-0 sticky z-20"
+      class="top-0 sticky z-20 select-none"
       :class="{
         '-translate-y-14 hover:translate-y-0 transition ease-in-out ': !open,
       }"
