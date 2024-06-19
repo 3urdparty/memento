@@ -66,7 +66,6 @@
 
         <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
         <Column field="question" header="Question"></Column>
-        <Column field="answer" header="Answer"></Column>
         <Column field="type" header="Type"></Column>
         <Column field="tags" header="Tags"></Column>
         <ColumnGroup type="footer">

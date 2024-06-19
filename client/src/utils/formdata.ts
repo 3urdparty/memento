@@ -1,5 +1,6 @@
 export const objectToFormData = (obj: any, formData = new FormData(), parentKey = ''): FormData => {
   for (const [key, value] of Object.entries(obj)) {
+
     const keyName = parentKey ? `${parentKey}[${key}]` : key;
 
     if (value instanceof Date) {

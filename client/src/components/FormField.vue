@@ -136,6 +136,7 @@
         {{ name }}
       </span>
     </div>
+
     <InputOptions v-if="type == 'inputoptions'" v-model="modelValue" />
   </div>
 </template>

@@ -1,13 +1,6 @@
 <template>
-  <Dialog
-    maximizable
-    v-model:visible="open"
-    modal
-    header="Create Card"
-    :style="{ width: '25rem' }"
-  >
+  <Dialog maximizable v-model:visible="open" modal header="Create Card">
     <Form v-model="form"> </Form>
-
     <Button @click="() => emit('create', values())">
       <Plus class="w-5 h-5" />
       Create
@@ -25,6 +18,9 @@ import { CreateCardDto } from '@backend/cards/dto/create-card.dto';
 import ClozeEdit from '@/components/ClozeEdit.vue';
 import { Deck, Field } from '@backend/decks/schemas/deck.schema';
 import { Card } from '@backend/cards/schemas/card.schema';
+import DiagramEdit from '@/components/DiagramEdit.vue';
+import InputText from 'primevue/inputtext';
+import MatchingInput from '@/components/MatchingInput.vue';
 
 const question_types = [
   {
@@ -37,7 +33,7 @@ const question_types = [
   },
   {
     name: 'Fill in the Blank',
-    value: 'fill-in-the-blank',
+    value: 'cloze',
   },
   {
     name: 'Short Answer',
@@ -69,13 +65,12 @@ const { form, values } = useForm({
     type: 'select',
     options: question_types,
     icon: FolderPen,
-    value: question_types[2].value,
+    value: question_types[0].value,
     required: true,
     removable: false,
     placeholder: 'Name',
     movable: false,
     editable: false,
-    default: 'Chapter 1',
   },
   question: {
     type: 'text',
@@ -84,9 +79,16 @@ const { form, values } = useForm({
     required: true,
     removable: false,
     placeholder: 'Name',
-    show: (form) =>
-      !(['fill-in-the-blank'] as Card['type'][]).includes(form['type'].value),
+    show: (form) => !(['cloze'] as Card['type'][]).includes(form['type'].value),
   },
+  true_false: {
+    label: 'Answer',
+    type: 'checkbox',
+    icon: FolderPen,
+    value: false,
+    show: (form) => form['type'].value === 'true-false',
+  },
+
   options: {
     type: 'inputoptions',
     show: (form) => form['type'].value === 'multiple-choice',
@@ -100,21 +102,40 @@ const { form, values } = useForm({
   },
   shuffle: {
     showLabel: false,
-    name: 'shuffle',
+    label: 'shuffle',
     value: false,
     type: 'checkbox',
     icon: Shuffle,
     show: (form) => form['type'].value === 'multiple-choice',
   },
-  fill_in_the_blanks: {
-    name: 'Answer',
+  clozeSegments: {
+    label: 'Answer',
     component: ClozeEdit,
-    show: (form) => form['type'].value === 'fill-in-the-blank',
+    show: (form) => form['type'].value === 'cloze',
   },
   short_answer: {
-    name: 'Answer',
-    component: 'markdown',
+    name: 'answer',
+    label: 'Answer',
+    type: 'longtext',
     show: (form) => form['type'].value === 'short-answer',
+  },
+  essay: {
+    name: 'answer',
+    label: 'Answer',
+    type: 'longtext',
+    show: (form) => form['type'].value === 'essay',
+  },
+  matching: {
+    name: 'answer',
+    label: 'Answer',
+    component: MatchingInput,
+    show: (form) => form['type'].value === 'matching',
+  },
+  diagram: {
+    name: 'answer',
+    label: 'Answer',
+    component: DiagramEdit,
+    show: (form) => form['type'].value === 'diagram',
   },
 });
 interface Props {
@@ -129,6 +150,7 @@ const props = defineProps<Props>();
 
 interface Emits {
   (e: 'update:open', value: boolean): void;
+  (e: 'create', value: CreateCardDto): void;
 }
 
 const emit = defineEmits<Emits>();

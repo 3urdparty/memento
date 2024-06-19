@@ -70,22 +70,19 @@
     </div>
 
     <div class="grid mt-4 gap-2">
-      <Card class="bg-slate-700">
+      <Card class="bg-slate-700" v-if="deck.cards.length == 0">
         <div
           class="h-80 w-full p-8 border border-slate-600 rounded-lg flex items-center justify-center"
         >
-          <div class="flex items-center gap-2" v-if="deck.cards.length == 0">
+          <div class="flex items-center gap-2">
             <Rabbit class="w-8 h-8" />
             <span class="mt-2.5"> No cards in this deck </span>
           </div>
-
-          <div v-else>
-            <p class="text-white text-2xl">
-              {{ deck.cards[currentCardIndex].question }}
-            </p>
-          </div>
         </div>
       </Card>
+
+      <Flashcard :flashcard="deck.cards[currentCardIndex]" v-else />
+
       <div class="flex items-center gap-2 justify-between mt-2">
         <div class="flex items-center gap-2">
           <Button :disabled="deck.cards.length == 0">
@@ -223,6 +220,7 @@ import InputSwitch from 'primevue/inputswitch';
 import { CardDocument } from '@backend/cards/schemas/card.schema';
 import { CardsService } from '@/services/CardsService';
 import MarkdownEditor from '@/components/MarkdownEditor.vue';
+import Flashcard from '@/components/Flashcard.vue';
 
 interface Props {
   slug: string;
@@ -245,6 +243,7 @@ onMounted(() => {
 const createDialogOpen = ref(false);
 
 const createCard = (newCard: CreateCardDto) => {
+  console.log(newCard);
   if (!deck.value) return;
   console.log('Creating Card', newCard);
   console.log(deck.value._id);

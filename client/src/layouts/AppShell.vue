@@ -127,18 +127,22 @@
                   currentRoute.fullPath === item.href
                     ? 'bg-gray-900 text-white'
                     : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                  'block rounded-md px-3 py-2 text-base font-medium',
+                  ' rounded-md px-3 py-2 text-base font-medium flex items-center gap-2 group',
                 ]"
                 :aria-current="
                   currentRoute.fullPath === item.href ? 'page' : undefined
                 "
-                >{{ item.name }}</DisclosureButton
               >
+                <component :is="item.icon" class="group-hover:text-green-400" />
+                <span class="group-hover:text-green-400">
+                  {{ item.name }}
+                </span>
+              </DisclosureButton>
             </div>
             <div class="border-t border-gray-700 pb-3 pt-4">
-              <div class="flex items-center px-5 sm:px-6">
+              <div class="flex items-center px-2 pr-4 sm:px-6">
                 <div class="flex-shrink-0">
-                  <AvatarDropDown showStatus v-bind="user?.avatar" />
+                  <AvatarDropDown showStatus :avatar="user?.avatar" />
                 </div>
                 <div class="ml-3">
                   <div class="text-base font-medium text-white">
@@ -174,7 +178,7 @@
     </div>
     <div>
       <main class="text-slate-400">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="mx-auto sm:max-w-7xl max-w-lg sm:px-6 lg:px-8">
           <slot />
         </div>
       </main>

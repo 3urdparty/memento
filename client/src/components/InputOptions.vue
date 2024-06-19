@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div class="@container">
     <InputText :modelValue="currentValue" class="w-full" @keydown="handleKey" />
     <ul
-      class="grid gap-2 py-2"
+      class="grid gap-2 py-2 grid-cols-1"
       :class="{
-        'grid-cols-1': modelValue.length < 2,
-        'grid-cols-2': modelValue.length >= 2 && modelValue.length <= 4,
-        'grid-cols-3': modelValue.length > 4,
+        '@xl:grid-cols-2': modelValue.length >= 2 && modelValue.length <= 4,
+        '@lg:grid-cols-3': modelValue.length > 4,
       }"
     >
       <TransitionGroup>
@@ -42,20 +41,15 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="O extends Option">
+<script setup lang="ts" generic="O extends MCQOption">
 import Checkbox from 'primevue/checkbox';
-export type Option = {
-  key: string;
-  name: string;
-  correct: boolean;
-  explanation?: string;
-};
 
 import { useVModel } from '@vueuse/core';
 import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
 import { Trash } from 'lucide-vue-next';
 import Button from './Button.vue';
+import { MCQOption } from '@backend/cards/schemas/card.schema';
 
 interface Props {
   modelValue: O[];

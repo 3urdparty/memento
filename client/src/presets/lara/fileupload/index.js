@@ -88,7 +88,6 @@ export default {
       'dark:text-white/80',
 
       // Spacing
-      'p-8',
 
       // Borders
       'border',

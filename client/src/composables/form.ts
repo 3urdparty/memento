@@ -6,7 +6,8 @@ export const useForm = (initialValues: { [key: string]: Field }) => {
   const values = () => {
     let result: { [key: string]: string | File | string[] } = {};
     for (const key in form) {
-      result[key] = form[key].value;
+      const field = form[key];
+      result[field.name ?? key] = form[key].value;
     }
     return result;
   };
