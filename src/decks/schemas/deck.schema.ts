@@ -12,9 +12,6 @@ import { Drawer } from 'src/drawers/schema/drawer.schema';
 
 export type DeckDocument = Deck & { _id: string };
 
-
-
-
 export class Field {
   type?:
     | 'text'
@@ -50,6 +47,7 @@ export class Field {
   showLabel?: boolean;
   showIcon?: boolean;
   message?: string;
+  label?: string;
 };
 @Schema({
   timestamps: { createdAt: 'created', updatedAt: 'updated' },
@@ -61,6 +59,9 @@ export class Field {
 
 
 export class Deck {
+
+  @Prop({ required: false, })
+  number: number;
 
   @Prop({ required: false })
   slug: string;
@@ -121,14 +122,11 @@ export class Deck {
 
   @Prop({ type: [Types.ObjectId], ref: Drawer.name })
   drawers?: Drawer[];
-
 }
 
 export const DeckSchema = SchemaFactory.createForClass(Deck)
 
 DeckSchema.pre('save', function(next) {
-  //@ts-ignore
-  // this.decks = this.decks.map(deck => deck._id)
   this.slug =
     this.name.toLowerCase().replace(/ /g, '-')
   next()

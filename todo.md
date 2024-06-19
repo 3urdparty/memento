@@ -1,0 +1,21 @@
+- [ ] Make Markdown editor just like Github markdown editor
+- [ ] Replace fill-in-the-blank with cloze, and research features from anki
+- [ ] Add Heatmap
+- [ ] Connect to lively API to track time spent revising
+- [ ] Add icons to each question  type in the question editor
+- [ ] Complete true false question editor
+- [ ] Change question input type to be markdown
+- [ ] Add ability to add pictures to questions
+- [ ] Complete answer matching question type
+- [ ] Add Diagram Editor component to add Cloze to images and be able to annotate (Excalidraw?)
+- [ ] Simple Flashcard mode for all cards
+- [ ] For Question Type Steps for mathematical equations, add square notebook paper background
+- [ ] Add Code question type
+- [ ] Look into ways to compile code and setup quick environments for some coding questions
+- [ ] Add different shapes and colours to each option in mcq (number of letters qwer for ease of use)
+- [ ] Add ability to add audio to questions
+- [ ] Drawing questions (for hiragana, kanji, etc)
+- [ ] Voice recognition questions
+- [ ] Add to Cards:
+- [ ] Preview option in create card
+1. Hint for all questions
