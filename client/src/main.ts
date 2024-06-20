@@ -12,12 +12,14 @@ import 'katex/dist/katex.min.css'
 import Tooltip from 'primevue/tooltip'
 import BadgeDirective from 'primevue/badgedirective'
 import ConfirmationService from 'primevue/confirmationservice';
+import { GesturePlugin } from '@vueuse/gesture'
 
 const app = createApp(App)
 app.use(VueKatex, {
   globalOptions: {}
 })
 
+app.use(GesturePlugin)
 
 app.use(PrimeVue, {
   unstyled: true,

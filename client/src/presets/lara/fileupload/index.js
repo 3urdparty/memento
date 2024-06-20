@@ -15,7 +15,7 @@ export default {
       'dark:text-white/80',
 
       // Spacing
-      'p-5',
+      'p-2',
       'gap-2',
 
       // Borders
@@ -79,7 +79,7 @@ export default {
   content: {
     class: [
       // Position
-      'relative',
+      'relative h-[30rem] overflow-clip',
 
       // Colors
       'bg-surface-0',

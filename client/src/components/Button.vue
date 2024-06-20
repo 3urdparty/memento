@@ -18,11 +18,14 @@
 </template>
 <script setup lang="ts">
 interface Props {
-  severity?: 'success' | 'info' | 'warning' | 'error';
+  severity?: (typeof severityOptions)[number];
   disabled?: boolean;
 }
 withDefaults(defineProps<Props>(), {
   severity: 'success',
   disabled: false,
 });
+</script>
+<script lang="ts">
+export const severityOptions = ['success', 'info', 'warning', 'error'] as const;
 </script>

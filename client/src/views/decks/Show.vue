@@ -1,5 +1,6 @@
 <template>
   <div v-if="deck" class="pb-14">
+    <DiagramEdit />
     <CreateDialog
       v-model:open="createDialogOpen"
       :deck="deck"
@@ -221,6 +222,7 @@ import { CardDocument } from '@backend/cards/schemas/card.schema';
 import { CardsService } from '@/services/CardsService';
 import MarkdownEditor from '@/components/MarkdownEditor.vue';
 import Flashcard from '@/components/Flashcard.vue';
+import DiagramEdit from '@/components/DiagramEdit.vue';
 
 interface Props {
   slug: string;

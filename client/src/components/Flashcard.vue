@@ -18,10 +18,9 @@
           >
         </span>
         <div
-          class="flex items-center mt-2 gap-3 justify-between border-b border-slate-700 pb-4"
+          class="flex items-center mt-2 gap-3 justify-center border-b border-slate-700 pb-8"
         >
           <p class="text-slate-400 font-bold text-4xl">
-            <span class="text-green-400"> Q{{ flashcard.number }}:</span>
             <span v-katex:auto="{ options }" class="w-fit pl-1.5">
               {{ flashcard.question }}
             </span>
@@ -35,10 +34,11 @@
         v-if="flashcard.type == 'multiple-choice'"
       >
         <TransitionGroup>
-          <li
+          <Button
             v-for="(option, idx) in flashcard.options"
             :key="idx"
-            class="flex align-items-center w-full border border-slate-600 rounded-md py-3 px-3 gap-4 justify-between"
+            class="py-6"
+            :severity="severityOptions[idx % severityOptions.length]"
           >
             <div class="flex items-center gap-3">
               <Checkbox :inputId="idx" name="category" :value="option.name" />
@@ -47,7 +47,7 @@
                 {{ option.name }}
               </span>
             </div>
-          </li>
+          </Button>
         </TransitionGroup>
       </div>
 
@@ -74,7 +74,7 @@
 
       <div
         v-else-if="flashcard.type == 'cloze'"
-        class="flex items-baseline gap-2"
+        class="flex items-baseline gap-2 justify-center w-full"
       >
         <div v-for="cloze in flashcard.clozeSegments">
           <InputText v-if="cloze.type == 'cloze'" size="small" />
@@ -82,6 +82,15 @@
             {{ cloze.value }}
           </span>
         </div>
+      </div>
+
+      <div
+        v-else-if="
+          flashcard.type == 'short-answer' || flashcard.type == 'essay'
+        "
+        class="flex items-baseline gap-2 justify-center w-full h-full"
+      >
+        <Textarea class="w-full h-full resize-none" autoresize />
       </div>
     </div>
   </Card>
@@ -95,6 +104,7 @@ import Checkbox from 'primevue/checkbox';
 import Badge from './Badge.vue';
 import { SparklesIcon } from 'lucide-vue-next';
 import InputText from 'primevue/inputtext';
+import Button from './Button.vue';
 interface Props {
   flashcard: CardDocument;
   showDeck: boolean;
@@ -102,4 +112,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   showDeck: true,
 });
+import { severityOptions } from '@/components/Button.vue';
+import Textarea from 'primevue/textarea';
 </script>

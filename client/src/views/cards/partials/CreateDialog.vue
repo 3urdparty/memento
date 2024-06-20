@@ -60,7 +60,7 @@ const question_types = [
     value: 'steps',
   },
 ];
-const { form, values } = useForm({
+const { form, values, clear } = useForm({
   type: {
     type: 'select',
     options: question_types,
@@ -83,6 +83,7 @@ const { form, values } = useForm({
   },
   true_false: {
     label: 'Answer',
+    name: 'answer',
     type: 'checkbox',
     icon: FolderPen,
     value: false,
